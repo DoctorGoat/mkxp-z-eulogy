@@ -27,6 +27,7 @@ global_args += '-DMKXPZ_BUILD_MESON'
 global_args += '-DMKXPZ_VERSION="@0@"'.format(meson.project_version())
 global_args += '-DMKXPZ_GIT_HASH="@0@"'.format(git_hash)
 global_args += '-DHAVE_NANOSLEEP'
+global_args += '-DDEBUG'
 # ====================
 # Ext libs
 # ====================
