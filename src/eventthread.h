@@ -76,7 +76,6 @@ public:
 	static MouseState mouseState;
 	static TouchState touchState;
     static SDL_atomic_t verticalScrollDistance;
-	static uint8_t lastInputDevice;
     
     std::string textInputBuffer;
     void lockText(bool lock);
@@ -99,6 +98,9 @@ public:
 	void requestShowCursor(bool mode);
     
     void requestTextInputMode(bool mode);
+    
+    void requestSettingsMenu();
+
 	void requestTerminate();
 
 	bool getFullscreen() const;
@@ -115,10 +117,6 @@ public:
 	/* Called on game screen (size / offset) changes */
 	void notifyGameScreenChange(const SDL_Rect &screen);
 
-	const std::string getLastInputDevice();
-	const SourceDesc getLastInput();
-	void clearLastInput();
-
 private:
 	static int eventFilter(void *, SDL_Event*);
 
@@ -126,6 +124,7 @@ private:
 	void setFullscreen(SDL_Window *, bool mode);
 	void updateCursorState(bool inWindow,
 	                       const SDL_Rect &screen);
+	void cursorTimer();
 
 	bool fullscreen;
 	bool showCursor;
@@ -287,9 +286,7 @@ struct RGSSThreadData
           scale(scalingFactor),
 	      config(newconf),
           glContext(ctx)
-	{
-		rqResetFinish.set();
-	}
+	{}
 };
 
 #endif // EVENTTHREAD_H

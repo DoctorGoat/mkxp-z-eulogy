@@ -36,14 +36,26 @@ struct Config {
     
     bool debugMode;
     bool winConsole;
-    std::string angleRenderer;
+    bool preferMetalRenderer;
+    bool displayFPS;
     bool printFPS;
     
     bool winResizable;
     bool fullscreen;
     bool fixedAspectRatio;
-    bool smoothScaling;
-    bool lanczos3Scaling;
+    int smoothScaling;
+    int smoothScalingDown;
+    int bitmapSmoothScaling;
+    int bitmapSmoothScalingDown;
+    bool smoothScalingMipmaps;
+    int bicubicSharpness;
+#ifdef MKXPZ_SSL
+    double xbrzScalingFactor;
+#endif
+    bool enableHires;
+    double textureScalingFactor;
+    double framebufferScalingFactor;
+    double atlasScalingFactor;
     bool vsync;
     
     int defScreenW;
@@ -70,6 +82,7 @@ struct Config {
     
     bool anyAltToggleFS;
     bool enableReset;
+    bool enableSettings;
     bool allowSymlinks;
     bool pathCache;
     
@@ -80,7 +93,11 @@ struct Config {
     std::string execName;
     std::string titleLanguage;
     
-    int volumeScale;
+    struct {
+        std::string soundFont;
+        bool chorus;
+        bool reverb;
+    } midi;
     
     struct {
         int sourceCount;
@@ -97,11 +114,12 @@ struct Config {
     std::vector<std::string> launchArgs;
     std::vector<std::string> preloadScripts;
     std::vector<std::string> rtps;
+    std::vector<std::string> patches;
     
     std::vector<std::string> fontSubs;
     
     std::vector<std::string> rubyLoadpaths;
-    
+
     /* Editor flags */
     struct {
         bool debug;
@@ -127,6 +145,8 @@ struct Config {
         bool enabled;
     } yjit;
 
+    bool dumpAtlas;
+
     // Keybinding action name mappings
     struct {
         std::string a;
@@ -145,18 +165,7 @@ struct Config {
     
     /* Internal */
     std::string customDataPath;
-    std::string commonDataPath;
-
-    struct {
-        std::string metaFile;
-        std::string patchFile;
-        std::string password;
-        int keyMultiplier;
-        int keyAdditive;
-    } encryption;
-
-    std::vector<double> axisDeadzone;
-
+    
     Config();
     
     bool fontIsSolid(const char *fontName) const;

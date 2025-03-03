@@ -26,7 +26,6 @@
 #include "intrulist.h"
 #include "etc.h"
 #include "etc-internal.h"
-#include "binding-util.h"
 
 class SceneElement;
 class Viewport;
@@ -58,8 +57,7 @@ public:
 	virtual void composite();
 	virtual void requestViewportRender(const Vec4& /* color */,
 	                                   const Vec4& /* flash */,
-	                                   const Vec4& /* tone */,
-									   const VALUE& /* shader arr */) {}
+	                                   const Vec4& /* tone */) {}
 
 	const Geometry &getGeometry() const { return geometry; }
 

@@ -121,18 +121,16 @@ struct AudioStream
 	} fadeIn;
 
 	AudioStream(ALStream::LoopMode loopMode,
-	            AL::Source::VolumeScale volumeScale,
 	            const std::string &threadId);
 	~AudioStream();
 
 	void play(const std::string &filename,
 	          int volume,
 	          int pitch,
-	          double offset = 0,
-			  bool doFadein = true);
+	          float offset = 0);
 	void stop();
 	void fadeOut(int duration);
-	void seek(double offset);
+	void seek(float offset);
 
 	/* Any access to this classes 'stream' member,
 	 * whether state query or modification, must be
@@ -143,10 +141,7 @@ struct AudioStream
 	void setVolume(VolumeType type, float value);
 	float getVolume(VolumeType type);
 
-	double playingOffset();
-	int getNumberOfComments();
-	char** getComments();
-	void setLoopPoints(int newLoopStart, int newLoopLength);
+	float playingOffset();
 
 private:
 	float volumes[VolumeTypeCount];

@@ -53,16 +53,6 @@ void fillStringVec(json::value &item, std::vector<std::string> &vector) {
     }
 }
 
-void fillNumberVec(json::value &item, std::vector<double> &vector) {
-    auto &array = item.as_array();
-    for (size_t i = 0; i < array.size(); i++) {
-        if (!array[i].is_number())
-            continue;
-
-        vector.push_back(array[i].as_number());
-    }
-}
-
 bool copyObject(json::value &dest, json::value &src, const char *objectName = "") {
     assert(dest.is_object());
     if (src.is_null())
@@ -139,12 +129,24 @@ void Config::read(int argc, char *argv[]) {
     auto optsJ = json::object({
         {"rgssVersion", 0},
         {"debugMode", false},
+        {"displayFPS", false},
         {"printFPS", false},
         {"winResizable", true},
         {"fullscreen", false},
         {"fixedAspectRatio", true},
-        {"smoothScaling", false},
-        {"lanczos3Scaling", false},
+        {"smoothScaling", 0},
+        {"smoothScalingDown", 0},
+        {"bitmapSmoothScaling", 0},
+        {"bitmapSmoothScalingDown", 0},
+        {"smoothScalingMipmaps", false},
+        {"bicubicSharpness", 100},
+#ifdef MKXPZ_SSL
+        {"xbrzScalingFactor", 1.},
+#endif
+        {"enableHires", false},
+        {"textureScalingFactor", 1.},
+        {"framebufferScalingFactor", 1.},
+        {"atlasScalingFactor", 1.},
         {"vsync", false},
         {"defScreenW", 0},
         {"defScreenH", 0},
@@ -154,33 +156,39 @@ void Config::read(int argc, char *argv[]) {
         {"syncToRefreshrate", false},
         {"solidFonts", json::array({})},
 #if defined(__APPLE__) && defined(__aarch64__)
-        {"angleRenderer", "metal"},
-#elif __WIN32__
-        {"angleRenderer", "opengl"},
+        {"preferMetalRenderer", true},
 #else
-        {"angleRenderer", "vulkan"},
+        {"preferMetalRenderer", false},
 #endif
         {"subImageFix", false},
+#ifdef __WIN32__
         {"enableBlitting", false},
+#else
+        {"enableBlitting", true},
+#endif
         {"integerScalingActive", false},
         {"integerScalingLastMile", true},
         {"maxTextureSize", 0},
         {"gameFolder", ""},
         {"anyAltToggleFS", false},
         {"enableReset", true},
+        {"enableSettings", true},
         {"allowSymlinks", false},
         {"dataPathOrg", ""},
         {"dataPathApp", ""},
         {"iconPath", ""},
         {"execName", "Game"},
-        {"volumeScale", 0},
+        {"midiSoundFont", ""},
+        {"midiChorus", false},
+        {"midiReverb", false},
         {"SESourceCount", 6},
         {"BGMTrackCount", 1},
         {"customScript", ""},
         {"pathCache", true},
-        {"useScriptNames", 1},
+        {"useScriptNames", true},
         {"preloadScript", json::array({})},
         {"RTP", json::array({})},
+        {"patches", json::array({})},
         {"fontSub", json::array({})},
         {"rubyLoadpath", json::array({})},
         {"JITEnable", false},
@@ -188,6 +196,7 @@ void Config::read(int argc, char *argv[]) {
         {"JITMaxCache", 100},
         {"JITMinCalls", 10000},
         {"YJITEnable", false},
+        {"dumpAtlas", false},
         {"bindingNames", json::object({
             {"a", "A"},
             {"b", "B"},
@@ -197,13 +206,7 @@ void Config::read(int argc, char *argv[]) {
             {"z", "Z"},
             {"l", "L"},
             {"r", "R"}
-        })},
-        {"metaFile", ""},
-        {"patchFile", ""},
-        {"password", ""},
-        {"keyMultiplier", 0},
-        {"keyAdditive", 0},
-        {"axisDeadzone", json::array({0, 0, 0, 0, 0, 0})}
+        })}
     });
     
     auto &opts = optsJ.as_object();
@@ -240,6 +243,7 @@ try { exp } catch (...) {}
     SET_STRINGOPT(iconPath, iconPath);
     SET_STRINGOPT(execName, execName);
     SET_OPT(allowSymlinks, boolean);
+    SET_OPT(pathCache, boolean);
     SET_OPT_CUSTOMKEY(jit.enabled, JITEnable, boolean);
     SET_OPT_CUSTOMKEY(jit.verboseLevel, JITVerboseLevel, integer);
     SET_OPT_CUSTOMKEY(jit.maxCache, JITMaxCache, integer);
@@ -263,13 +267,24 @@ try { exp } catch (...) {}
     
     // now RESUME
     
-    SET_OPT(pathCache, boolean);
     SET_OPT(debugMode, boolean);
+    SET_OPT(displayFPS, boolean);
     SET_OPT(printFPS, boolean);
     SET_OPT(fullscreen, boolean);
     SET_OPT(fixedAspectRatio, boolean);
-    SET_OPT(smoothScaling, boolean);
-    SET_OPT(lanczos3Scaling, boolean);
+    SET_OPT(smoothScaling, integer);
+    SET_OPT(smoothScalingDown, integer);
+    SET_OPT(bitmapSmoothScaling, integer);
+    SET_OPT(bitmapSmoothScalingDown, integer);
+    SET_OPT(smoothScalingMipmaps, boolean);
+    SET_OPT(bicubicSharpness, integer);
+#ifdef MKXPZ_SSL
+    SET_OPT(xbrzScalingFactor, integer);
+#endif
+    SET_OPT(enableHires, boolean);
+    SET_OPT(textureScalingFactor, number);
+    SET_OPT(framebufferScalingFactor, number);
+    SET_OPT(atlasScalingFactor, number);
     SET_OPT(winResizable, boolean);
     SET_OPT(vsync, boolean);
     SET_STRINGOPT(windowTitle, windowTitle);
@@ -277,7 +292,12 @@ try { exp } catch (...) {}
     SET_OPT(frameSkip, boolean);
     SET_OPT(syncToRefreshrate, boolean);
     fillStringVec(opts["solidFonts"], solidFonts);
-    SET_STRINGOPT(angleRenderer, angleRenderer);
+    for (std::string & solidFont : solidFonts)
+        std::transform(solidFont.begin(), solidFont.end(), solidFont.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+#ifdef __APPLE__
+    SET_OPT(preferMetalRenderer, boolean);
+#endif
     SET_OPT(subImageFix, boolean);
     SET_OPT(enableBlitting, boolean);
     SET_OPT_CUSTOMKEY(integerScaling.active, integerScalingActive, boolean);
@@ -285,22 +305,24 @@ try { exp } catch (...) {}
     SET_OPT(maxTextureSize, integer);
     SET_OPT(anyAltToggleFS, boolean);
     SET_OPT(enableReset, boolean);
-    SET_OPT(volumeScale, integer);
+    SET_OPT(enableSettings, boolean);
+    SET_STRINGOPT(midi.soundFont, midiSoundFont);
+    SET_OPT_CUSTOMKEY(midi.chorus, midiChorus, boolean);
+    SET_OPT_CUSTOMKEY(midi.reverb, midiReverb, boolean);
     SET_OPT_CUSTOMKEY(SE.sourceCount, SESourceCount, integer);
     SET_OPT_CUSTOMKEY(BGM.trackCount, BGMTrackCount, integer);
     SET_STRINGOPT(customScript, customScript);
     SET_OPT(useScriptNames, boolean);
-    SET_STRINGOPT(encryption.metaFile, metaFile);
-    SET_STRINGOPT(encryption.patchFile, patchFile);
-    SET_STRINGOPT(encryption.password, password);
-    SET_OPT_CUSTOMKEY(encryption.keyMultiplier, keyMultiplier, integer);
-    SET_OPT_CUSTOMKEY(encryption.keyAdditive, keyAdditive, integer);
+    SET_OPT(dumpAtlas, boolean);
     
     fillStringVec(opts["preloadScript"], preloadScripts);
     fillStringVec(opts["RTP"], rtps);
+    fillStringVec(opts["patches"], patches);
     fillStringVec(opts["fontSub"], fontSubs);
+    for (std::string & fontSub : fontSubs)
+        std::transform(fontSub.begin(), fontSub.end(), fontSub.begin(),
+            [](unsigned char c) { return std::tolower(c); });
     fillStringVec(opts["rubyLoadpath"], rubyLoadpaths);
-    fillNumberVec(opts["axisDeadzone"], axisDeadzone);
     
     auto &bnames = opts["bindingNames"].as_object();
     
@@ -324,7 +346,7 @@ try { exp } catch (...) {}
 #ifdef __APPLE__
     // Determine whether to use the Metal renderer on macOS
     // Environment variable takes priority over the json setting
-    angleRenderer = isMetalSupported() ? "metal" : "opengl";
+    preferMetalRenderer = isMetalSupported() && getEnvironmentBool("MKXPZ_MACOS_METAL", preferMetalRenderer);
 #endif
     
     // Determine whether to allow manual selection of a game folder on startup
@@ -337,11 +359,11 @@ try { exp } catch (...) {}
 }
 
 static void setupScreenSize(Config &conf) {
-  if (conf.defScreenW <= 0)
-    conf.defScreenW = 736;
-
-  if (conf.defScreenH <= 0)
-    conf.defScreenH = 416;
+    if (conf.defScreenW <= 0)
+        conf.defScreenW = (conf.rgssVersion == 1 ? 640 : 544);
+    
+    if (conf.defScreenH <= 0)
+        conf.defScreenH = (conf.rgssVersion == 1 ? 480 : 416);
 }
 
 bool Config::fontIsSolid(const char *fontName) const {

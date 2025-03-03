@@ -22,10 +22,12 @@
 #include "alstream.h"
 
 #include "sharedstate.h"
+#include "sharedmidistate.h"
 #include "eventthread.h"
 #include "filesystem.h"
 #include "exception.h"
 #include "aldatasource.h"
+#include "fluid-fun.h"
 #include "sdl-util.h"
 #include "debugwriter.h"
 
@@ -34,11 +36,9 @@
 #include <SDL_timer.h>
 
 ALStream::ALStream(LoopMode loopMode,
-		           AL::Source::VolumeScale volumeScale,
 		           const std::string &threadId)
 	: looped(loopMode == Looped),
 	  state(Closed),
-	  volumeScale(volumeScale),
 	  source(0),
 	  thread(0),
 	  preemptPause(false),
@@ -46,7 +46,7 @@ ALStream::ALStream(LoopMode loopMode,
 {
 	alSrc = AL::Source::gen();
 
-	AL::Source::setVolume(alSrc, 1.0f, volumeScale);
+	AL::Source::setVolume(alSrc, 1.0f);
 	AL::Source::setPitch(alSrc, 1.0f);
 	AL::Source::detachBuffer(alSrc);
 
@@ -90,7 +90,18 @@ void ALStream::close()
 
 void ALStream::open(const std::string &filename)
 {
-	openSource(filename);
+	checkStopped();
+
+	switch (state)
+	{
+	case Playing:
+	case Paused:
+		stopStream();
+	case Stopped:
+		closeSource();
+	case Closed:
+		openSource(filename);
+	}
 
 	state = Stopped;
 }
@@ -112,7 +123,7 @@ void ALStream::stop()
 	state = Stopped;
 }
 
-void ALStream::play(double offset)
+void ALStream::play(float offset)
 {
 	if (!source)
 		return;
@@ -153,7 +164,7 @@ void ALStream::pause()
 
 void ALStream::setVolume(float value)
 {
-	AL::Source::setVolume(alSrc, value, volumeScale);
+	AL::Source::setVolume(alSrc, value);
 }
 
 void ALStream::setPitch(float value)
@@ -173,14 +184,13 @@ ALStream::State ALStream::queryState()
 	return state;
 }
 
-double ALStream::queryOffset()
+float ALStream::queryOffset()
 {
 	if (state == Closed || !source)
 		return 0;
 
-	double procOffset = static_cast<double>(procFrames) / source->sampleRate();
+	float procOffset = static_cast<float>(procFrames) / source->sampleRate();
 
-	// TODO: getSecOffset returns a float, we should improve precision to double.
 	return procOffset + AL::Source::getSecOffset(alSrc);
 }
 
@@ -191,30 +201,47 @@ void ALStream::closeSource()
 
 struct ALStreamOpenHandler : FileSystem::OpenHandler
 {
+	SDL_RWops *srcOps;
 	bool looped;
 	ALDataSource *source;
+	int fallbackMode;
 	std::string errorMsg;
 
-	ALStreamOpenHandler(bool looped)
-	    : looped(looped), source(0)
+	ALStreamOpenHandler(SDL_RWops &srcOps, bool looped)
+	    : srcOps(&srcOps), looped(looped), source(0), fallbackMode(0)
 	{}
 
 	bool tryRead(SDL_RWops &ops, const char *ext)
 	{
+		/* Copy this because we need to keep it around,
+		 * as we will continue reading data from it later */
+		*srcOps = ops;
+
 		/* Try to read ogg file signature */
 		char sig[5] = { 0 };
-		SDL_RWread(&ops, sig, 1, 4);
-		SDL_RWseek(&ops, 0, RW_SEEK_SET);
+		SDL_RWread(srcOps, sig, 1, 4);
+		SDL_RWseek(srcOps, 0, RW_SEEK_SET);
 
 		try
 		{
 			if (!strcmp(sig, "OggS"))
 			{
-				source = createVorbisSource(ops, looped);
+				source = createVorbisSource(*srcOps, looped);
 				return true;
 			}
 
-			source = createSDLSource(ops, ext, STREAM_BUF_SIZE, looped);
+			if (!strcmp(sig, "MThd"))
+			{
+				shState->midiState().initIfNeeded(shState->config());
+
+				if (HAVE_FLUID)
+				{
+					source = createMidiSource(*srcOps, looped);
+					return true;
+				}
+			}
+
+			source = createSDLSource(*srcOps, ext, STREAM_BUF_SIZE, looped, fallbackMode);
 		}
 		catch (const Exception &e)
 		{
@@ -230,24 +257,21 @@ struct ALStreamOpenHandler : FileSystem::OpenHandler
 
 void ALStream::openSource(const std::string &filename)
 {
-	ALStreamOpenHandler handler(looped);
-	try
+	ALStreamOpenHandler handler(srcOps, looped);
+	shState->fileSystem().openRead(handler, filename.c_str());
+	source = handler.source;
+	needsRewind.clear();
+
+	// Try fallback mode, e.g. for handling S32->F32 sample format conversion
+	if (!source)
 	{
+		handler.fallbackMode = 1;
 		shState->fileSystem().openRead(handler, filename.c_str());
-	} catch (const Exception &e)
-	{
-		/* If no file was found then we leave the stream open.
-		 * A PHYSFSError means we found a match but couldn't
-		 * open the file, so we'll close it in that case. */
-		if (e.type != Exception::NoFileError)
-			close();
-		
-		throw e;
+		source = handler.source;
+		needsRewind.clear();
 	}
 
-	close();
-
-	if (!handler.source)
+	if (!source)
 	{
 		char buf[512];
 		snprintf(buf, sizeof(buf), "Unable to decode audio stream: %s: %s",
@@ -255,9 +279,6 @@ void ALStream::openSource(const std::string &filename)
 
 		Debug() << buf;
 	}
-	
-	source = handler.source;
-	needsRewind.clear();
 }
 
 void ALStream::stopStream()
@@ -279,7 +300,7 @@ void ALStream::stopStream()
 	procFrames = 0;
 }
 
-void ALStream::startStream(double offset)
+void ALStream::startStream(float offset)
 {
 	AL::Source::clearQueue(alSrc);
 
@@ -463,18 +484,4 @@ void ALStream::streamData()
 
 		SDL_Delay(AUDIO_SLEEP);
 	}
-}
-
-int ALStream::getNumberOfComments()
-{
-	return source->getNumberOfComments();
-}
-
-char** ALStream::getComments() {
-	return source->getComments();
-}
-
-void ALStream::setLoopPoints(int newLoopStart, int newLoopLength)
-{
-	source->setLoopPoints(newLoopStart, newLoopLength);
 }

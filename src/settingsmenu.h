@@ -1,9 +1,9 @@
 /*
-** exception.h
+** settingsmenu.h
 **
 ** This file is part of mkxp.
 **
-** Copyright (C) 2013 - 2021 Amaryllis Kulla <ancurio@mapleshrine.eu>
+** Copyright (C) 2014 - 2021 Amaryllis Kulla <ancurio@mapleshrine.eu>
 **
 ** mkxp is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,45 +19,28 @@
 ** along with mkxp.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef SETTINGSMENU_H
+#define SETTINGSMENU_H
 
-#include <string>
-#include <stdio.h>
-#include <stdarg.h>
+#include <stdint.h>
 
-struct Exception
+struct SettingsMenuPrivate;
+struct RGSSThreadData;
+union SDL_Event;
+
+class SettingsMenu
 {
-	enum Type
-	{
-		RGSSError,
-		NoFileError,
-		IOError,
+public:
+	SettingsMenu(RGSSThreadData &rtData);
+	~SettingsMenu();
 
-		/* Already defined by ruby */
-		TypeError,
-		ArgumentError,
+	/* Returns true if the event was consumed */
+	bool onEvent(const SDL_Event &event);
+	void raise();
+	bool destroyReq() const;
 
-		/* New types introduced in mkxp */
-		PHYSFSError,
-		SDLError,
-		MKXPError
-	};
-
-	Type type;
-	std::string msg;
-
-	Exception(Type type, const char *format, ...)
-	    : type(type)
-	{
-		va_list ap;
-		va_start(ap, format);
-
-		msg.resize(512);
-		vsnprintf(&msg[0], msg.size(), format, ap);
-
-		va_end(ap);
-	}
+private:
+	SettingsMenuPrivate *p;
 };
 
-#endif // EXCEPTION_H
+#endif // SETTINGSMENU_H

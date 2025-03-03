@@ -47,8 +47,6 @@ struct ALStream
 	bool looped;
 	State state;
 
-	AL::Source::VolumeScale volumeScale;
-
 	ALDataSource *source;
 	SDL_Thread *thread;
 
@@ -66,7 +64,7 @@ struct ALStream
 	AtomicFlag threadTermReq;
 
 	AtomicFlag needsRewind;
-	double startOffset;
+	float startOffset;
 
 	float pitch;
 
@@ -75,6 +73,8 @@ struct ALStream
 
 	uint64_t procFrames;
 	AL::Buffer::ID lastBuf;
+
+	SDL_RWops srcOps;
 
 	struct
 	{
@@ -89,31 +89,27 @@ struct ALStream
 	};
 
 	ALStream(LoopMode loopMode,
-	         AL::Source::VolumeScale volumeScale,
 	         const std::string &threadId);
 	~ALStream();
 
 	void close();
 	void open(const std::string &filename);
 	void stop();
-	void play(double offset = 0);
+	void play(float offset = 0);
 	void pause();
 
 	void setVolume(float value);
 	void setPitch(float value);
 	State queryState();
-	double queryOffset();
+	float queryOffset();
 	bool queryNativePitch();
-	int getNumberOfComments();
-	char** getComments();
-	void setLoopPoints(int newLoopStart, int newLoopLength);
 
 private:
 	void closeSource();
 	void openSource(const std::string &filename);
 
 	void stopStream();
-	void startStream(double offset);
+	void startStream(float offset);
 	void pauseStream();
 	void resumeStream();
 

@@ -40,7 +40,6 @@ class Scene;
 class FileSystem;
 class EventThread;
 class Graphics;
-class FirstPerson;
 class Input;
 class Audio;
 class GLState;
@@ -50,6 +49,7 @@ class SharedFontState;
 struct GlobalIBO;
 struct Config;
 struct Vec2i;
+struct SharedMidiState;
 
 struct SharedState
 {
@@ -68,7 +68,6 @@ struct SharedState
 	Config &config() const;
 
 	Graphics &graphics() const;
-	FirstPerson &firstPerson() const;
 	Input &input() const;
 	Audio &audio() const;
 
@@ -80,6 +79,7 @@ struct SharedState
 
 	SharedFontState &fontState() const;
 	Font &defaultFont() const;
+	SharedMidiState &midiState() const;
 
 	sigslot::signal<> prepareDraw;
 

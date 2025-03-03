@@ -22,9 +22,10 @@
 #include "rgssad.h"
 #include "boost-hash.h"
 
-#include <regex>
 #include <stdint.h>
 #include <string.h>
+
+#include <string>
 
 /* Equivalent Linear Congruential Generator (LCG) constants for iteration 2^n
  * all the way up to 2^32/4 (the largest dword offset possible in
@@ -52,66 +53,46 @@ constexpr static uint32_t LCG_TABLE[30][2] = {
     {0x80000001, 0xc0000000}, {0x00000001, 0x80000000},
 };
 
-
-struct BUGS_entryData
+struct RGSS_entryData
 {
 	int64_t offset;
-	uint32_t patchVersion;
-	uint32_t checksum;
 	uint64_t size;
 	uint32_t startMagic;
 };
 
-struct BUGS_entryHandle
+struct RGSS_entryHandle
 {
-	const BUGS_entryData data;
+	const RGSS_entryData data;
 	uint32_t currentMagic;
 	uint64_t currentOffset;
 	PHYSFS_Io *io;
-	uint32_t patchVersion;
 
-	BUGS_entryHandle(const BUGS_entryData &data, PHYSFS_Io *archIo)
+	RGSS_entryHandle(const RGSS_entryData &data, PHYSFS_Io *archIo)
 	    : data(data),
 	      currentMagic(data.startMagic),
-	      currentOffset(0),
-		  patchVersion(data.patchVersion)
+	      currentOffset(0)
 	{
 		io = archIo->duplicate(archIo);
 	}
 
-	~BUGS_entryHandle()
+	~RGSS_entryHandle()
 	{
 		io->destroy(io);
 	}
 };
 
-struct BUGS_archiveData
+struct RGSS_archiveData
 {
+	PHYSFS_Io *archiveIo;
+
 	/* Maps: file path
 	 * to:   entry data */
-	BoostHash<std::string, BUGS_entryData> entryHash;
+	BoostHash<std::string, RGSS_entryData> entryHash;
 
 	/* Maps: directory path,
 	 * to:   list of contained entries */
-	BoostHash<std::string, BoostSet<std::string>> dirHash;
-	
-	const char* password;
-	int passwordLength;
-	int keyMultiplier;
-	int keyAdditive;
-	unsigned int keyIndex;
-	std::regex patchMatcher;
+	BoostHash<std::string, BoostSet<std::string> > dirHash;
 };
-
-struct BUGS_patchData
-{
-	PHYSFS_Io *archiveIo;
-	uint32_t patchVersion;
-	BUGS_archiveData *data;
-};
-
-/* Meta information shared between archives */
-BUGS_archiveData *bugsMetaInformation;
 
 static bool
 readUint32(PHYSFS_Io *io, uint32_t &result)
@@ -127,16 +108,20 @@ readUint32(PHYSFS_Io *io, uint32_t &result)
 	return (count == 4);
 }
 
-#define PASSWORD_CHARACTER(i) bugsMetaInformation->password[i%bugsMetaInformation->passwordLength]
+#define RGSS_HEADER "RGSSAD"
+#define RGSS_MAGIC 0xDEADCAFE
+
 #define PHYSFS_ALLOC(type) \
 	static_cast<type*>(PHYSFS_getAllocator()->Malloc(sizeof(type)))
+
+#define IO_READ(io, dest, size) (io->read(io, dest, size) == size)
 
 static inline uint32_t
 advanceMagic(uint32_t &magic)
 {
 	uint32_t old = magic;
 
-	magic = magic * bugsMetaInformation->keyMultiplier + bugsMetaInformation->keyAdditive;
+	magic = magic * 7 + 3;
 
 	return old;
 }
@@ -158,9 +143,9 @@ advanceMagicN(uint32_t &magic, uint32_t n) {
 }
 
 static PHYSFS_sint64
-BUGS_ioRead(PHYSFS_Io *self, void *buffer, PHYSFS_uint64 len)
+RGSS_ioRead(PHYSFS_Io *self, void *buffer, PHYSFS_uint64 len)
 {
-	BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
+	RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
 
 	PHYSFS_Io *io = entry->io;
 
@@ -254,9 +239,9 @@ BUGS_ioRead(PHYSFS_Io *self, void *buffer, PHYSFS_uint64 len)
 }
 
 static int
-BUGS_ioSeek(PHYSFS_Io *self, PHYSFS_uint64 offset)
+RGSS_ioSeek(PHYSFS_Io *self, PHYSFS_uint64 offset)
 {
-	BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
+	RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
 
 	if (offset == entry->currentOffset)
 		return 1;
@@ -285,26 +270,26 @@ BUGS_ioSeek(PHYSFS_Io *self, PHYSFS_uint64 offset)
 }
 
 static PHYSFS_sint64
-BUGS_ioTell(PHYSFS_Io *self)
+RGSS_ioTell(PHYSFS_Io *self)
 {
-	const BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
+	const RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
 
 	return entry->currentOffset;
 }
 
 static PHYSFS_sint64
-BUGS_ioLength(PHYSFS_Io *self)
+RGSS_ioLength(PHYSFS_Io *self)
 {
-	const BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
+	const RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
 
 	return entry->data.size;
 }
 
 static PHYSFS_Io*
-BUGS_ioDuplicate(PHYSFS_Io *self)
+RGSS_ioDuplicate(PHYSFS_Io *self)
 {
-	const BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
-	BUGS_entryHandle *entryDup = new BUGS_entryHandle(*entry);
+	const RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
+	RGSS_entryHandle *entryDup = new RGSS_entryHandle(*entry);
 
 	PHYSFS_Io *dup = PHYSFS_ALLOC(PHYSFS_Io);
 	*dup = *self;
@@ -314,31 +299,31 @@ BUGS_ioDuplicate(PHYSFS_Io *self)
 }
 
 static void
-BUGS_ioDestroy(PHYSFS_Io *self)
+RGSS_ioDestroy(PHYSFS_Io *self)
 {
-	BUGS_entryHandle *entry = static_cast<BUGS_entryHandle*>(self->opaque);
+	RGSS_entryHandle *entry = static_cast<RGSS_entryHandle*>(self->opaque);
 
 	delete entry;
 
 	PHYSFS_getAllocator()->Free(self);
 }
 
-static const PHYSFS_Io BUGS_IoTemplate =
+static const PHYSFS_Io RGSS_IoTemplate =
 {
     0, /* version */
     0, /* opaque */
-    BUGS_ioRead,
+    RGSS_ioRead,
     0, /* write */
-    BUGS_ioSeek,
-    BUGS_ioTell,
-    BUGS_ioLength,
-    BUGS_ioDuplicate,
+    RGSS_ioSeek,
+    RGSS_ioTell,
+    RGSS_ioLength,
+    RGSS_ioDuplicate,
     0, /* flush */
-    BUGS_ioDestroy
+    RGSS_ioDestroy
 };
 
 static void
-processDirectories(BUGS_archiveData *data, BoostSet<std::string> &topLevel,
+processDirectories(RGSS_archiveData *data, BoostSet<std::string> &topLevel,
                    char *nameBuf, uint32_t nameLen)
 {
 	/* Check for top level entries */
@@ -373,12 +358,90 @@ processDirectories(BUGS_archiveData *data, BoostSet<std::string> &topLevel,
 		}
 }
 
+static bool
+verifyHeader(PHYSFS_Io *io, char version)
+{
+	char header[8];
+
+	if (!IO_READ(io, header, sizeof(header)))
+		return false;
+
+	if (strcmp(header, RGSS_HEADER))
+		return false;
+
+	if (header[7] != version)
+		return false;
+
+	return true;
+}
+
+static void*
+RGSS_openArchive(PHYSFS_Io *io, const char *, int forWrite, int *claimed)
+{
+	if (forWrite)
+		return NULL;
+
+	/* Version 1 */
+	if (!verifyHeader(io, 1))
+		return NULL;
+	else
+		*claimed = 1;
+
+	RGSS_archiveData *data = new RGSS_archiveData;
+	data->archiveIo = io;
+
+	uint32_t magic = RGSS_MAGIC;
+
+	/* Top level entry list */
+	BoostSet<std::string> &topLevel = data->dirHash[""];
+
+	while (true)
+	{
+		/* Read filename length,
+         * if nothing was read, no files remain */
+		uint32_t nameLen;
+
+		if (!readUint32(io, nameLen))
+			break;
+
+		nameLen ^= advanceMagic(magic);
+
+		static char nameBuf[512];
+		for (uint32_t i = 0; i < nameLen; ++i)
+		{
+			char c;
+			io->read(io, &c, 1);
+			nameBuf[i] = c ^ (advanceMagic(magic) & 0xFF);
+			if (nameBuf[i] == '\\')
+				nameBuf[i] = '/';
+		}
+
+		nameBuf[nameLen] = '\0';
+
+		uint32_t entrySize;
+		readUint32(io, entrySize);
+		entrySize ^= advanceMagic(magic);
+
+		RGSS_entryData entry;
+		entry.offset = io->tell(io);
+		entry.size = entrySize;
+		entry.startMagic = magic;
+
+		data->entryHash.insert(nameBuf, entry);
+		processDirectories(data, topLevel, nameBuf, nameLen);
+
+		io->seek(io, entry.offset + entry.size);
+	}
+
+	return data;
+}
+
 static PHYSFS_EnumerateCallbackResult
-BUGS_enumerateFiles(void *opaque, const char *dirname,
+RGSS_enumerateFiles(void *opaque, const char *dirname,
                     PHYSFS_EnumerateCallback cb,
                     const char *origdir, void *callbackdata)
 {
-	BUGS_archiveData *data = static_cast<BUGS_patchData*>(opaque)->data;
+	RGSS_archiveData *data = static_cast<RGSS_archiveData*>(opaque);
 
 	std::string _dirname(dirname);
 
@@ -395,32 +458,28 @@ BUGS_enumerateFiles(void *opaque, const char *dirname,
 }
 
 static PHYSFS_Io*
-BUGS_openRead(void *opaque, const char *filename)
+RGSS_openRead(void *opaque, const char *filename)
 {
-	BUGS_patchData *patchData = static_cast<BUGS_patchData*>(opaque);
-	BUGS_archiveData *data = patchData->data;
-	uint32_t patchVersion = patchData->patchVersion;
+	RGSS_archiveData *data = static_cast<RGSS_archiveData*>(opaque);
 
-
-	if (!data->entryHash.contains(filename) ||
-		data->entryHash.value(filename).patchVersion != patchVersion)
+	if (!data->entryHash.contains(filename))
 		return 0;
 
-	BUGS_entryHandle *entry =
-	        new BUGS_entryHandle(data->entryHash[filename], patchData->archiveIo);
+	RGSS_entryHandle *entry =
+	        new RGSS_entryHandle(data->entryHash[filename], data->archiveIo);
 
 	PHYSFS_Io *io = PHYSFS_ALLOC(PHYSFS_Io);
 
-	*io = BUGS_IoTemplate;
+	*io = RGSS_IoTemplate;
 	io->opaque = entry;
 
 	return io;
 }
 
 static int
-BUGS_stat(void *opaque, const char *filename, PHYSFS_Stat *stat)
+RGSS_stat(void *opaque, const char *filename, PHYSFS_Stat *stat)
 {
-	BUGS_archiveData *data = static_cast<BUGS_patchData*>(opaque)->data;
+	RGSS_archiveData *data = static_cast<RGSS_archiveData*>(opaque);
 
 	bool hasFile = data->entryHash.contains(filename);
 	bool hasDir  = data->dirHash.contains(filename);
@@ -438,7 +497,7 @@ BUGS_stat(void *opaque, const char *filename, PHYSFS_Stat *stat)
 
 	if (hasFile)
 	{
-		const BUGS_entryData &entry = data->entryHash[filename];
+		const RGSS_entryData &entry = data->entryHash[filename];
 
 		stat->filesize = entry.size;
 		stat->filetype = PHYSFS_FILETYPE_REGULAR;
@@ -453,9 +512,9 @@ BUGS_stat(void *opaque, const char *filename, PHYSFS_Stat *stat)
 }
 
 static void
-BUGS_closeArchive(void *opaque)
+RGSS_closeArchive(void *opaque)
 {
-	BUGS_archiveData *data = static_cast<BUGS_patchData*>(opaque)->data;
+	RGSS_archiveData *data = static_cast<RGSS_archiveData*>(opaque);
 
 	delete data;
 }
@@ -472,133 +531,154 @@ RGSS_noop2(void*, const char*)
 	return 0;
 }
 
-
-
-static bool
-readUint32AndXor(PHYSFS_Io *io, uint32_t &result)
-{
-    result ^= bugsMetaInformation->password[0];
-	if (!readUint32(io, result))
-		return false;
-
-    result ^= PASSWORD_CHARACTER(bugsMetaInformation->keyIndex++);
-
-	return true;
-}
-
-static bool
-decryptAndReadString(PHYSFS_Io *io, char* buffer, int stringLength)
-{
-	io->read(io, buffer, stringLength);
-
-    for(int i=0; i < stringLength; i++) {
-        buffer[i] ^= ((PASSWORD_CHARACTER(bugsMetaInformation->keyIndex++)));
-    }
-	buffer[stringLength] = '\0';
-	return true;
-}
-
-static void*
-BUGS_openArchive(PHYSFS_Io *io, const char *path, int forWrite, int *claimed)
-{
-	if (forWrite)
-		return NULL;
-	*claimed = 1;
-
-	std::string patchName(path);
-	std::smatch sm;
-	std::regex_search(patchName, sm, bugsMetaInformation->patchMatcher);
-	if (sm.size() != 1)
-		return NULL;
-
-
-	BUGS_patchData *patchData = new BUGS_patchData;
-	patchData->patchVersion = std::stoi(sm[0]);
-	patchData->data = bugsMetaInformation;
-	patchData->archiveIo = io;
-
-	return patchData;
-}
-
-void
-BUGS_openMetaArchive(PHYSFS_Io *io, std::string password, int keyMultiplier, int keyAdditive)
-{
-	io->seek(io, 8);
-
-	bugsMetaInformation = new BUGS_archiveData;
-	bugsMetaInformation->password = password.c_str();
-	bugsMetaInformation->passwordLength = password.length();
-	bugsMetaInformation->keyMultiplier = keyMultiplier;
-	bugsMetaInformation->keyAdditive = keyAdditive;
-	bugsMetaInformation->keyIndex = -1;
-	bugsMetaInformation->patchMatcher = std::regex("\\d+");
-
-	/* Top level entry list */
-	BoostSet<std::string> &topLevel = bugsMetaInformation->dirHash[""];
-
-	uint32_t offset, patchVersion, checksum, fileSize, magicKey, fileNameLen;
-	static char fileName[512];
-
-	while (true)
-	{
-		if (!readUint32AndXor(io, offset))
-			goto error;
-
-		/* Zero offset means entry list has ended */
-		if(offset <= 0)
-			break;
-
-		if (!readUint32AndXor(io, patchVersion))
-			goto error;
-
-		if (!readUint32AndXor(io, checksum))
-			goto error;
-
-		if (!readUint32AndXor(io, fileSize))
-			goto error;
-
-		if (!readUint32AndXor(io, magicKey))
-			goto error;
-
-		if (!readUint32AndXor(io, fileNameLen))
-			goto error;
-		if (!decryptAndReadString(io, fileName, fileNameLen))
-			goto error;
-
-		BUGS_entryData entry;
-		entry.offset = offset;
-		entry.size = fileSize;
-		entry.startMagic = magicKey;
-		entry.patchVersion = patchVersion;
-		bugsMetaInformation->entryHash.insert(fileName, entry);
-		processDirectories(bugsMetaInformation, topLevel, fileName, fileNameLen);
-
-		continue;
-
-	error:
-		delete bugsMetaInformation;
-		return;
-	}
-
-}
-
-const PHYSFS_Archiver Bugs_Archiver =
+const PHYSFS_Archiver RGSS1_Archiver =
 {
 	0,
 	{
-		"BUGS",
-		"BUGS encrypted patch format",
+		"RGSSAD",
+		"RGSS encrypted archive format",
 		"", /* Author */
 		"", /* Website */
 		0 /* symlinks not supported */
 	},
-	BUGS_openArchive,
-	BUGS_enumerateFiles,
-	BUGS_openRead,
+	RGSS_openArchive,
+	RGSS_enumerateFiles,
+	RGSS_openRead,
 	RGSS_noop1, /* openWrite */
 	RGSS_noop1, /* openAppend */
 	RGSS_noop2, /* remove */
 	RGSS_noop2, /* mkdir */
-	BUGS_stat,
-	BUGS_closeArchive
+	RGSS_stat,
+	RGSS_closeArchive
+};
+
+const PHYSFS_Archiver RGSS2_Archiver =
+{
+	0,
+	{
+		"RGSS2A",
+		"RGSS2 encrypted archive format",
+		"", /* Author */
+		"", /* Website */
+		0 /* symlinks not supported */
+	},
+	RGSS_openArchive,
+	RGSS_enumerateFiles,
+	RGSS_openRead,
+	RGSS_noop1, /* openWrite */
+	RGSS_noop1, /* openAppend */
+	RGSS_noop2, /* remove */
+	RGSS_noop2, /* mkdir */
+	RGSS_stat,
+	RGSS_closeArchive
+};
+
+static bool
+readUint32AndXor(PHYSFS_Io *io, uint32_t &result, uint32_t key)
+{
+	if (!readUint32(io, result))
+		return false;
+
+	result ^= key;
+
+	return true;
+}
+
+static void*
+RGSS3_openArchive(PHYSFS_Io *io, const char *, int forWrite, int *claimed)
+{
+	if (forWrite)
+		return NULL;
+
+	/* Version 3 */
+	if (!verifyHeader(io, 3))
+		return NULL;
+	else
+		*claimed = 1;
+
+	uint32_t baseMagic;
+
+	if (!readUint32(io, baseMagic))
+		return NULL;
+
+	baseMagic = (baseMagic * 9) + 3;
+
+	RGSS_archiveData *data = new RGSS_archiveData;
+	data->archiveIo = io;
+
+	/* Top level entry list */
+	BoostSet<std::string> &topLevel = data->dirHash[""];
+
+	while (true)
+	{
+		uint32_t offset, size, magic, nameLen;
+
+		if (!readUint32AndXor(io, offset, baseMagic))
+			goto error;
+
+		/* Zero offset means entry list has ended */
+		if (offset == 0)
+			break;
+
+		if (!readUint32AndXor(io, size, baseMagic))
+			goto error;
+
+		if (!readUint32AndXor(io, magic, baseMagic))
+			goto error;
+
+		if (!readUint32AndXor(io, nameLen, baseMagic))
+			goto error;
+
+		char nameBuf[512];
+
+		if (!IO_READ(io, nameBuf, nameLen))
+			goto error;
+
+		for (uint32_t i = 0; i < nameLen; ++i)
+		{
+			nameBuf[i] ^= ((baseMagic >> 8*(i%4)) & 0xFF);
+
+			if (nameBuf[i] == '\\')
+				nameBuf[i] = '/';
+		}
+
+		nameBuf[nameLen] = '\0';
+
+		RGSS_entryData entry;
+		entry.offset = offset;
+		entry.size = size;
+		entry.startMagic = magic;
+
+		data->entryHash.insert(nameBuf, entry);
+		processDirectories(data, topLevel, nameBuf, nameLen);
+
+		continue;
+
+	error:
+		delete data;
+		return NULL;
+	}
+
+	return data;
+}
+
+const PHYSFS_Archiver RGSS3_Archiver =
+{
+	0,
+	{
+		"RGSS3A",
+		"RGSS3 encrypted archive format",
+		"", /* Author */
+		"", /* Website */
+		0 /* symlinks not supported */
+	},
+	RGSS3_openArchive,
+	RGSS_enumerateFiles,
+	RGSS_openRead,
+	RGSS_noop1, /* openWrite */
+	RGSS_noop1, /* openAppend */
+	RGSS_noop2, /* remove */
+	RGSS_noop2, /* mkdir */
+	RGSS_stat,
+	RGSS_closeArchive
 };

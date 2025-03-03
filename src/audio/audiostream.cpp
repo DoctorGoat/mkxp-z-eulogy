@@ -29,11 +29,10 @@
 #include <SDL_timer.h>
 
 AudioStream::AudioStream(ALStream::LoopMode loopMode,
-                         AL::Source::VolumeScale volumeScale,
                          const std::string &threadId)
 	: extPaused(false),
 	  noResumeStop(false),
-	  stream(loopMode, volumeScale, threadId)
+	  stream(loopMode, threadId)
 {
 	current.volume = 1.0f;
 	current.pitch = 1.0f;
@@ -77,8 +76,7 @@ AudioStream::~AudioStream()
 void AudioStream::play(const std::string &filename,
                        int volume,
                        int pitch,
-                       double offset,
-					   bool doFadein)
+                       float offset)
 {
 	finiFadeOutInt();
 
@@ -115,32 +113,37 @@ void AudioStream::play(const std::string &filename,
 	/* Requested audio file is different from current one */
 	bool diffFile = (filename != current.filename);
 
-	if (diffFile || sState == ALStream::Closed)
+	switch (sState)
 	{
-		try
+	case ALStream::Paused :
+	case ALStream::Playing :
+		stream.stop();
+	case ALStream::Stopped :
+		if (diffFile)
+			stream.close();
+	case ALStream::Closed :
+		if (diffFile)
 		{
-			/* This will throw on errors while
-			 * opening the data source */
-			stream.open(filename);
+			try
+			{
+				/* This will throw on errors while
+				 * opening the data source */
+				stream.open(filename);
+			}
+			catch (const Exception &e)
+			{
+				unlockStream();
+				throw e;
+			}
 		}
-		catch (const Exception &e)
-		{
-			unlockStream();
-			throw e;
-		}
-	} else {
-		switch (sState)
-		{
-			case ALStream::Paused :
-			case ALStream::Playing :
-				stream.stop();
-		}
+
+		break;
 	}
 
 	setVolume(Base, _volume);
 	stream.setPitch(_pitch);
 
-	if (offset > 0 && doFadein)
+	if (offset > 0)
 	{
 		setVolume(FadeIn, 0);
 		startFadeIn();
@@ -219,7 +222,7 @@ void AudioStream::fadeOut(int duration)
 	unlockStream();
 }
 
-void AudioStream::seek(double offset)
+void AudioStream::seek(float offset)
 {
 	lockStream();
 	stream.play(offset);
@@ -250,14 +253,14 @@ float AudioStream::getVolume(VolumeType type)
 	return volumes[type];
 }
 
-double AudioStream::playingOffset()
+float AudioStream::playingOffset()
 {
 	return stream.queryOffset();
 }
 
 void AudioStream::updateVolume()
 {
-	float vol = 1.0f;
+	float vol = GLOBAL_VOLUME;
 
 	for (size_t i = 0; i < VolumeTypeCount; ++i)
 		vol *= volumes[i];
@@ -358,27 +361,12 @@ void AudioStream::fadeInThread()
 			break;
 		}
 
-		setVolume(FadeIn, prog);
+		/* Quadratic increase (not really the same as
+		 * in RMVXA, but close enough) */
+		setVolume(FadeIn, prog*prog);
 
 		unlockStream();
 
 		SDL_Delay(AUDIO_SLEEP);
 	}
-}
-
-int AudioStream::getNumberOfComments()
-{
-	return stream.getNumberOfComments();
-}
-
-char** AudioStream::getComments()
-{
-	return stream.getComments();
-}
-
-void AudioStream::setLoopPoints(int newLoopStart, int newLoopLength)
-{
-	lockStream();
-	stream.setLoopPoints(newLoopStart, newLoopLength);
-	unlockStream();
 }

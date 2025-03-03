@@ -24,7 +24,6 @@
 #include "util.h"
 #include "filesystem.h"
 #include "graphics.h"
-#include "fps/firstperson.h"
 #include "input.h"
 #include "audio.h"
 #include "glstate.h"
@@ -37,6 +36,7 @@
 #include "quad.h"
 #include "binding.h"
 #include "exception.h"
+#include "sharedmidistate.h"
 
 #include <unistd.h>
 #include <stdio.h>
@@ -46,6 +46,19 @@
 SharedState *SharedState::instance = 0;
 int SharedState::rgssVersion = 0;
 static GlobalIBO *_globalIBO = 0;
+
+static const char *gameArchExt()
+{
+	if (rgssVer == 1)
+		return ".rgssad";
+	else if (rgssVer == 2)
+		return ".rgss2a";
+	else if (rgssVer == 3)
+		return ".rgss3a";
+
+	assert(!"unreachable");
+	return 0;
+}
 
 struct SharedStatePrivate
 {
@@ -59,8 +72,9 @@ struct SharedStatePrivate
 	RGSSThreadData &rtData;
 	Config &config;
 
+	SharedMidiState midiState;
+
 	Graphics graphics;
-	FirstPerson firstPerson;
 	Input input;
 	Audio audio;
 
@@ -94,8 +108,8 @@ struct SharedStatePrivate
 	      eThread(*threadData->ethread),
 	      rtData(*threadData),
 	      config(threadData->config),
+	      midiState(threadData->config),
 	      graphics(threadData),
-		  firstPerson(),
 	      input(*threadData),
 	      audio(*threadData),
 	      _glState(threadData->config),
@@ -109,30 +123,17 @@ struct SharedStatePrivate
 		if (gl.ReleaseShaderCompiler)
 			gl.ReleaseShaderCompiler();
 
-		const char* metaPath = config.encryption.metaFile.c_str();
+		std::string archPath = config.execName + gameArchExt();
 
-		/* Check if a meta archive exists */
-		FILE *tmp = fopen(metaPath, "rb");
+		for (size_t i = 0; i < config.patches.size(); ++i)
+			fileSystem.addPath(config.patches[i].c_str());
+
+		/* Check if a game archive exists */
+		FILE *tmp = fopen(archPath.c_str(), "rb");
 		if (tmp)
 		{
-			fileSystem.initializeArchiveMetadata(metaPath, config);
+			fileSystem.addPath(archPath.c_str());
 			fclose(tmp);
-		}
-
-		/* Add any and all patch files */
-		const char* patchFilePattern = config.encryption.patchFile.c_str();
-		char buf[32];
-		int patchNumber = 1;
-		while(true)
-		{
-			snprintf(buf, sizeof(buf), patchFilePattern, patchNumber++);
-			tmp = fopen(buf, "rb");
-			if(tmp) {
-				fileSystem.addPath(buf);
-				fclose(tmp);
-			} else {
-				break;
-			}
 		}
 
 		fileSystem.addPath(".");
@@ -159,6 +160,11 @@ struct SharedStatePrivate
 		/* Reuse starting values */
 		TEXFBO::allocEmpty(gpTexFBO, globalTexW, globalTexH);
 		TEXFBO::linkFBO(gpTexFBO);
+
+		/* RGSS3 games will call setup_midi, so there's
+		 * no need to do it on startup */
+		if (rgssVer <= 2)
+			midiState.initIfNeeded(threadData->config);
 	}
 
 	~SharedStatePrivate()
@@ -229,7 +235,6 @@ GSATT(EventThread&, eThread)
 GSATT(RGSSThreadData&, rtData)
 GSATT(Config&, config)
 GSATT(Graphics&, graphics)
-GSATT(FirstPerson&, firstPerson)
 GSATT(Input&, input)
 GSATT(Audio&, audio)
 GSATT(GLState&, _glState)
@@ -237,6 +242,7 @@ GSATT(ShaderSet&, shaders)
 GSATT(TexPool&, texPool)
 GSATT(Quad&, gpQuad)
 GSATT(SharedFontState&, fontState)
+GSATT(SharedMidiState&, midiState)
 
 void SharedState::setBindingData(void *data)
 {

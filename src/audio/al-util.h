@@ -27,8 +27,6 @@
 
 #include <SDL_audio.h>
 #include <assert.h>
-#include <cfloat>
-#include <cmath>
 
 namespace AL
 {
@@ -168,24 +166,9 @@ namespace Source
 		return value;
 	}
 
-	enum VolumeScale
+	inline void setVolume(Source::ID id, float value)
 	{
-		Db35 = 0,
-		Linear = 1,
-	};
-
-	inline void setVolume(Source::ID id, float value, VolumeScale scale)
-	{
-		switch (scale) {
-			case Linear:
-				break;
-			default:
-				if (value > FLT_EPSILON) {
-					value = std::pow(10.0f, -(35.0f / 20.0f) * (1.0f - value));
-				}
-				break;
-		}
-		alSourcef(id.al, AL_GAIN, value * 0.8f);
+		alSourcef(id.al, AL_GAIN, value);
 	}
 
 	inline void setPitch(Source::ID id, float value)
@@ -224,7 +207,9 @@ inline uint8_t formatSampleSize(int sdlFormat)
 	case AUDIO_S16LSB :
 	case AUDIO_S16MSB :
 		return 2;
-            
+
+    case AUDIO_S32LSB :
+    case AUDIO_S32MSB :
     case AUDIO_F32LSB :
     case AUDIO_F32MSB :
         return 4;
@@ -267,5 +252,6 @@ inline ALenum chooseALFormat(int sampleSize, int channelCount)
 
 #define AUDIO_SLEEP 10
 #define STREAM_BUF_SIZE 32768
+#define GLOBAL_VOLUME 0.8f
 
 #endif // ALUTIL_H

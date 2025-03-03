@@ -24,6 +24,7 @@
 #include "audiostream.h"
 #include "soundemitter.h"
 #include "sharedstate.h"
+#include "sharedmidistate.h"
 #include "eventthread.h"
 #include "sdl-util.h"
 #include "exception.h"
@@ -68,15 +69,15 @@ struct AudioPrivate
 	} meWatch;
 
 	AudioPrivate(RGSSThreadData &rtData)
-	    : bgs(ALStream::Looped, static_cast<AL::Source::VolumeScale>(rtData.config.volumeScale), "bgs"),
-	      me(ALStream::NotLooped, static_cast<AL::Source::VolumeScale>(rtData.config.volumeScale), "me"),
+	    : bgs(ALStream::Looped, "bgs"),
+	      me(ALStream::NotLooped, "me"),
 	      se(rtData.config),
 	      syncPoint(rtData.syncPoint),
           volumeRatio(1)
 	{
         for (int i = 0; i < rtData.config.BGM.trackCount; i++) {
             std::string id = std::string("bgm" + std::to_string(i));
-            bgmTracks.push_back(new AudioStream(ALStream::Looped, static_cast<AL::Source::VolumeScale>(rtData.config.volumeScale), id.c_str()));
+            bgmTracks.push_back(new AudioStream(ALStream::Looped, id.c_str()));
         }
         
 		meWatch.state = MeNotPlaying;
@@ -291,8 +292,7 @@ Audio::Audio(RGSSThreadData &rtData)
 void Audio::bgmPlay(const char *filename,
                     int volume,
                     int pitch,
-                    double pos,
-                    bool fadein,
+                    float pos,
                     int track)
 {
     if (track == -127) {
@@ -305,7 +305,7 @@ void Audio::bgmPlay(const char *filename,
         
         track = 0;
     }
-	p->getTrackByIndex(track)->play(filename, volume, pitch, pos, fadein);
+	p->getTrackByIndex(track)->play(filename, volume, pitch, pos);
 }
 
 void Audio::bgmStop(int track)
@@ -352,34 +352,11 @@ void Audio::bgmSetVolume(int volume, int track)
     p->getTrackByIndex(track)->setVolume(AudioStream::Base, vol);
 }
 
-int Audio::bgmGetNumberOfComments(int track)
-{
-    if (track == -127) {
-        track = 0;
-    }
-	return p->getTrackByIndex(track)->getNumberOfComments();
-}
-
-char** Audio::bgmGetComments(int track)
-{
-    if (track == -127) {
-        track = 0;
-    }
-	return p->getTrackByIndex(track)->getComments();
-}
-
-void Audio::bgmSetLoopPoints(int newLoopStart, int newLoopLength, int track)
-{
-    if (track == -127) {
-        track = 0;
-    }
-	p->getTrackByIndex(track)->setLoopPoints(newLoopStart, newLoopLength);
-}
 
 void Audio::bgsPlay(const char *filename,
                     int volume,
                     int pitch,
-                    double pos)
+                    float pos)
 {
 	p->bgs.play(filename, volume, pitch, pos);
 }
@@ -425,12 +402,17 @@ void Audio::seStop()
 	p->se.stop();
 }
 
-double Audio::bgmPos(int track)
+void Audio::setupMidi()
+{
+	shState->midiState().initIfNeeded(shState->config());
+}
+
+float Audio::bgmPos(int track)
 {
 	return p->getTrackByIndex(track)->playingOffset();
 }
 
-double Audio::bgsPos()
+float Audio::bgsPos()
 {
 	return p->bgs.playingOffset();
 }

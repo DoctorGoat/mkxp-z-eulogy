@@ -53,7 +53,7 @@ static ov_callbacks OvCallbacks =
 
 struct VorbisSource : ALDataSource
 {
-	SDL_RWops src;
+	SDL_RWops &src;
 
 	OggVorbis_File vf;
 
@@ -116,8 +116,6 @@ struct VorbisSource : ALDataSource
 		if (!loop.requested)
 			return;
 
-		int newLoopStart = 0;
-		int newLoopLength = 0;
 		/* Try to extract loop info */
 		for (int i = 0; i < vf.vc->comments; ++i)
 		{
@@ -135,15 +133,16 @@ struct VorbisSource : ALDataSource
 			*sep = '\0';
 
 			if (!strcmp(comment, "LOOPSTART"))
-				newLoopStart = strtol(sep+1, 0, 10);
+				loop.start = strtol(sep+1, 0, 10);
 
 			if (!strcmp(comment, "LOOPLENGTH"))
-				newLoopLength = strtol(sep+1, 0, 10);
+				loop.length = strtol(sep+1, 0, 10);
 
 			*sep = '=';
 		}
 
-		setLoopPoints(newLoopStart, newLoopLength);
+		loop.end = loop.start + loop.length;
+		loop.valid = (loop.start && loop.length);
 	}
 
 	~VorbisSource()
@@ -157,7 +156,7 @@ struct VorbisSource : ALDataSource
 		return info.rate;
 	}
 
-	void seekToOffset(double seconds)
+	void seekToOffset(float seconds)
 	{
 		if (seconds <= 0)
 		{
@@ -165,7 +164,6 @@ struct VorbisSource : ALDataSource
 			currentFrame = 0;
 		}
 
-		// TODO: We're flooring here when we probably should be rounding.
 		currentFrame = seconds * info.rate;
 
 		if (loop.valid && currentFrame > loop.end)
@@ -174,24 +172,6 @@ struct VorbisSource : ALDataSource
 		/* If seeking fails, just seek back to start */
 		if (ov_pcm_seek(&vf, currentFrame) != 0)
 			ov_raw_seek(&vf, 0);
-	}
-
-	char** getComments()
-	{
-		return vf.vc->user_comments;
-	}
-
-	int getNumberOfComments()
-	{
-		return vf.vc->comments;
-	}
-
-	void setLoopPoints(int newLoopStart, int newLoopLength)
-	{
-		loop.start = newLoopStart;
-		loop.length = newLoopLength;
-		loop.end = loop.start + loop.length;
-		loop.valid = (loop.start && loop.length);
 	}
 
 	Status fillBuffer(AL::Buffer::ID alBuffer)

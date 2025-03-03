@@ -41,21 +41,17 @@ public:
 	void bgmPlay(const char *filename,
 	             int volume = 100,
 	             int pitch = 100,
-	             double pos = 0,
-				 bool fadein = true,
+	             float pos = 0,
                  int track = -127);
 	void bgmStop(int track = -127);
 	void bgmFade(int time, int track = -127);
     int bgmGetVolume(int track = -127);
     void bgmSetVolume(int volume = 100, int track = -127);
-    int bgmGetNumberOfComments(int track = -127);
-    char** bgmGetComments(int track = -127);
-    void bgmSetLoopPoints(int newLoopStart, int newLoopLength, int track = -127);
 
 	void bgsPlay(const char *filename,
 	             int volume = 100,
 	             int pitch = 100,
-	             double pos = 0);
+	             float pos = 0);
 	void bgsStop();
 	void bgsFade(int time);
 
@@ -70,8 +66,9 @@ public:
 	            int pitch = 100);
 	void seStop();
 
-	double bgmPos(int track = 0);
-	double bgsPos();
+	void setupMidi();
+	float bgmPos(int track = 0);
+	float bgsPos();
 
 	void reset();
 
