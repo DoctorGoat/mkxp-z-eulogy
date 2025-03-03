@@ -58,16 +58,10 @@ RB_METHOD(tilemapVXInitialize) {
     
     rb_iv_set(self, "viewport", viewportObj);
     
-    /* Dispose the old bitmap array if we're reinitializing.
-     * See the comment in setPrivateData for more info. */
-    VALUE autotilesObj = rb_iv_get(self, "bitmap_array");
-    if (autotilesObj != Qnil)
-        setPrivateData(autotilesObj, 0);
-    
     wrapProperty(self, &t->getBitmapArray(), "bitmap_array", BitmapArrayType,
                  rb_const_get(rb_cObject, rb_intern("Tilemap")));
     
-    autotilesObj = rb_iv_get(self, "bitmap_array");
+    VALUE autotilesObj = rb_iv_get(self, "bitmap_array");
     
     VALUE ary = rb_ary_new2(9);
     for (int i = 0; i < 9; ++i)
@@ -85,6 +79,8 @@ RB_METHOD(tilemapVXInitialize) {
 
 RB_METHOD(tilemapVXGetBitmapArray) {
     RB_UNUSED_PARAM;
+    
+    checkDisposed<TilemapVX>(self);
     
     return rb_iv_get(self, "bitmap_array");
 }
@@ -110,10 +106,7 @@ DEF_GFX_PROP_I(TilemapVX, OX)
 DEF_GFX_PROP_I(TilemapVX, OY)
 
 RB_METHOD(tilemapVXBitmapsSet) {
-    TilemapVX::BitmapArray *a = getPrivateDataNoRaise<TilemapVX::BitmapArray>(self);
-    
-    if (!a)
-        return self;
+    TilemapVX::BitmapArray *a = getPrivateData<TilemapVX::BitmapArray>(self);
     
     int i;
     VALUE bitmapObj;

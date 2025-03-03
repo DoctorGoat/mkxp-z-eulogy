@@ -8,6 +8,8 @@
 mkxp
 xxd+
 
+/res
+
 /build
 /builddir
 
@@ -73,6 +75,3 @@ DerivedData/
 
 ## Gcc Patch
 /*.gcno
-
-# Meson logs
-*.tlog

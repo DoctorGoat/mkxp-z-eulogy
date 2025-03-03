@@ -25,18 +25,17 @@
 #include "exception.h"
 
 #define DEF_PLAY_STOP_POS(entity) \
-	RB_METHOD_GUARD(audio_##entity##Play) \
+	RB_METHOD(audio_##entity##Play) \
 	{ \
 		RB_UNUSED_PARAM; \
 		const char *filename; \
 		int volume = 100; \
 		int pitch = 100; \
 		double pos = 0.0; \
-		rb_get_args(argc, argv, "z|iif", &filename, &volume, &pitch, &pos RB_ARG_END); \
-		shState->audio().entity##Play(filename, volume, pitch, pos); \
+        rb_get_args(argc, argv, "z|iif", &filename, &volume, &pitch, &pos RB_ARG_END); \
+		GUARD_EXC( shState->audio().entity##Play(filename, volume, pitch, pos); ) \
 		return Qnil; \
 	} \
-	RB_METHOD_GUARD_END \
 	RB_METHOD(audio_##entity##Stop) \
 	{ \
 		RB_UNUSED_PARAM; \
@@ -50,17 +49,16 @@
 	}
 
 #define DEF_PLAY_STOP(entity) \
-	RB_METHOD_GUARD(audio_##entity##Play) \
+	RB_METHOD(audio_##entity##Play) \
 	{ \
 		RB_UNUSED_PARAM; \
 		const char *filename; \
 		int volume = 100; \
 		int pitch = 100; \
 		rb_get_args(argc, argv, "z|ii", &filename, &volume, &pitch RB_ARG_END); \
-		shState->audio().entity##Play(filename, volume, pitch); \
+		GUARD_EXC( shState->audio().entity##Play(filename, volume, pitch); ) \
 		return Qnil; \
 	} \
-	RB_METHOD_GUARD_END \
 	RB_METHOD(audio_##entity##Stop) \
 	{ \
 		RB_UNUSED_PARAM; \
@@ -89,20 +87,18 @@ RB_METHOD(audio_##entity##Fade) \
 
 #define MAYBE_NIL_TRACK(t) t == Qnil ? -127 : NUM2INT(t)
 
-RB_METHOD_GUARD(audio_bgmPlay)
+RB_METHOD(audio_bgmPlay)
 {
     RB_UNUSED_PARAM;
     const char *filename;
     int volume = 100;
     int pitch = 100;
     double pos = 0.0;
-	bool fadein = true;
     VALUE track = Qnil;
-    rb_get_args(argc, argv, "z|iifbo", &filename, &volume, &pitch, &pos, &fadein, &track RB_ARG_END);
-    shState->audio().bgmPlay(filename, volume, pitch, pos, fadein, MAYBE_NIL_TRACK(track));
+    rb_get_args(argc, argv, "z|iifo", &filename, &volume, &pitch, &pos, &track RB_ARG_END);
+    GUARD_EXC( shState->audio().bgmPlay(filename, volume, pitch, pos, MAYBE_NIL_TRACK(track)); )
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(audio_bgmStop)
 {
@@ -121,52 +117,24 @@ RB_METHOD(audio_bgmPos)
     return rb_float_new(shState->audio().bgmPos(MAYBE_NIL_TRACK(track)));
 }
 
-RB_METHOD_GUARD(audio_bgmGetVolume)
+RB_METHOD(audio_bgmGetVolume)
 {
     RB_UNUSED_PARAM;
     VALUE track = Qnil;
     rb_get_args(argc, argv, "|o", &track RB_ARG_END);
     int ret = 0;
-    ret = shState->audio().bgmGetVolume(MAYBE_NIL_TRACK(track));
+    GUARD_EXC( ret = shState->audio().bgmGetVolume(MAYBE_NIL_TRACK(track)); )
     return rb_fix_new(ret);
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(audio_bgmSetVolume)
+RB_METHOD(audio_bgmSetVolume)
 {
     RB_UNUSED_PARAM;
     int volume;
     VALUE track = Qnil;
     rb_get_args(argc, argv, "i|o", &volume, &track RB_ARG_END);
-    shState->audio().bgmSetVolume(volume, MAYBE_NIL_TRACK(track));
+    GUARD_EXC( shState->audio().bgmSetVolume(volume, MAYBE_NIL_TRACK(track)); )
     return Qnil;
-}
-RB_METHOD_GUARD_END
-
-RB_METHOD(audio_bgmSetLoopPoints)
-{
-    RB_UNUSED_PARAM;
-    int newLoopStart, newLoopLength;
-    VALUE track = Qnil;
-    rb_get_args(argc, argv, "ii|o", &newLoopStart, &newLoopLength, &track RB_ARG_END);
-    shState->audio().bgmSetLoopPoints(newLoopStart, newLoopLength, MAYBE_NIL_TRACK(track));
-    return Qnil;
-}
-
-RB_METHOD(audio_bgmGetComments)
-{
-    RB_UNUSED_PARAM;
-    VALUE track = Qnil;
-    rb_get_args(argc, argv, "o", &track RB_ARG_END);
-	int numComments = 0;
-	char** sourceComments;
-    VALUE comments = rb_ary_new();
-	numComments = shState->audio().bgmGetNumberOfComments(MAYBE_NIL_TRACK(track));
-	sourceComments = shState->audio().bgmGetComments(MAYBE_NIL_TRACK(track));
-	for(int i = 0; i < numComments; i++) {
-		rb_ary_push(comments, rb_str_new_cstr(sourceComments[i]));
-	}
-    return comments;
 }
 
 DEF_PLAY_STOP_POS( bgs )
@@ -188,6 +156,15 @@ DEF_FADE( bgs )
 DEF_FADE( me )
 
 DEF_PLAY_STOP( se )
+
+RB_METHOD(audioSetupMidi)
+{
+	RB_UNUSED_PARAM;
+
+	shState->audio().setupMidi();
+
+	return Qnil;
+}
 
 RB_METHOD(audioReset)
 {
@@ -222,13 +199,13 @@ audioBindingInit()
 	BIND_PLAY_STOP_FADE( bgm );
     _rb_define_module_function(module, "bgm_volume", audio_bgmGetVolume);
     _rb_define_module_function(module, "bgm_set_volume", audio_bgmSetVolume);
-    _rb_define_module_function(module, "bgm_set_loop_points", audio_bgmSetLoopPoints);
-    _rb_define_module_function(module, "bgm_comments", audio_bgmGetComments);
 	BIND_PLAY_STOP_FADE( bgs );
 	BIND_PLAY_STOP_FADE( me  );
 
 	BIND_POS( bgm );
 	BIND_POS( bgs );
+
+	_rb_define_module_function(module, "setup_midi", audioSetupMidi);
 
 	BIND_PLAY_STOP( se )
 

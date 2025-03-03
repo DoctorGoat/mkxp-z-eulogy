@@ -91,7 +91,6 @@ void tilemapVXBindingInit();
 void inputBindingInit();
 void audioBindingInit();
 void graphicsBindingInit();
-void fpsBindingInit();
 
 void fileIntBindingInit();
 
@@ -104,11 +103,6 @@ void CUSLBindingInit();
 #endif
 
 void httpBindingInit();
-
-void compiledShaderBindingInit();
-void shaderBindingInit();
-
-void etc_internalBindingInit();
 
 RB_METHOD(mkxpDelta);
 RB_METHOD(mriPrint);
@@ -133,6 +127,7 @@ RB_METHOD(mkxpUserLanguage);
 RB_METHOD(mkxpUserName);
 RB_METHOD(mkxpGameTitle);
 RB_METHOD(mkxpPowerState);
+RB_METHOD(mkxpSettingsMenu);
 RB_METHOD(mkxpCpuCount);
 RB_METHOD(mkxpSystemMemory);
 RB_METHOD(mkxpReloadPathCache);
@@ -140,6 +135,7 @@ RB_METHOD(mkxpAddPath);
 RB_METHOD(mkxpRemovePath);
 RB_METHOD(mkxpFileExists);
 RB_METHOD(mkxpLaunch);
+RB_METHOD(mkxpRegenerateScriptsArr);
 
 RB_METHOD(mkxpGetJSONSetting);
 RB_METHOD(mkxpSetJSONSetting);
@@ -177,7 +173,6 @@ static void mriBindingInit() {
     inputBindingInit();
     audioBindingInit();
     graphicsBindingInit();
-    fpsBindingInit();
     
     fileIntBindingInit();
     
@@ -190,11 +185,6 @@ static void mriBindingInit() {
 #endif
     
     httpBindingInit();
-
-	shaderBindingInit();
-	compiledShaderBindingInit();
-	
-	etc_internalBindingInit();
     
     if (rgssVer >= 3) {
         _rb_define_module_function(rb_mKernel, "rgss_main", mriRgssMain);
@@ -229,6 +219,7 @@ static void mriBindingInit() {
     _rb_define_module_function(mod, "set_window_title", mkxpSetTitle);
     _rb_define_module_function(mod, "window_title", mkxpGetTitle);
     _rb_define_module_function(mod, "window_title=", mkxpSetTitle);
+    _rb_define_module_function(mod, "show_settings", mkxpSettingsMenu);
     _rb_define_module_function(mod, "puts", mkxpPuts);
     _rb_define_module_function(mod, "desensitize", mkxpDesensitize);
     _rb_define_module_function(mod, "platform", mkxpPlatform);
@@ -256,6 +247,7 @@ static void mriBindingInit() {
     _rb_define_module_function(mod, "unmount", mkxpRemovePath);
     _rb_define_module_function(mod, "file_exist?", mkxpFileExists);
     _rb_define_module_function(mod, "launch", mkxpLaunch);
+    _rb_define_module_function(mod, "regenerate_scripts", mkxpRegenerateScriptsArr);
     
     _rb_define_module_function(mod, "default_font_family=", mkxpSetDefaultFontFamily);
     
@@ -325,29 +317,21 @@ static void printP(int argc, VALUE *argv, const char *convMethod,
 }
 
 
-RB_METHOD_GUARD(mriPrint) {
+RB_METHOD(mriPrint) {
     RB_UNUSED_PARAM;
     
     printP(argc, argv, "to_s", "");
     
-    shState->checkShutdown();
-    shState->checkReset();
-    
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(mriP) {
+RB_METHOD(mriP) {
     RB_UNUSED_PARAM;
     
     printP(argc, argv, "inspect", "\n");
     
-    shState->checkShutdown();
-    shState->checkReset();
-    
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(mkxpDelta) {
     RB_UNUSED_PARAM;
@@ -526,6 +510,14 @@ RB_METHOD(mkxpPowerState) {
     return hash;
 }
 
+RB_METHOD(mkxpSettingsMenu) {
+    RB_UNUSED_PARAM;
+    
+    shState->eThread().requestSettingsMenu();
+    
+    return Qnil;
+}
+
 RB_METHOD(mkxpCpuCount) {
     RB_UNUSED_PARAM;
     
@@ -538,50 +530,57 @@ RB_METHOD(mkxpSystemMemory) {
     return INT2NUM(SDL_GetSystemRAM());
 }
 
-RB_METHOD_GUARD(mkxpReloadPathCache) {
+RB_METHOD(mkxpReloadPathCache) {
     RB_UNUSED_PARAM;
     
     shState->fileSystem().reloadPathCache();
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(mkxpAddPath) {
+RB_METHOD(mkxpAddPath) {
     RB_UNUSED_PARAM;
     
-    VALUE path, mountpoint, reload;
-    rb_scan_args(argc, argv, "12", &path, &mountpoint, &reload);
+    VALUE path, mountpoint, reload, prepend;
+    rb_scan_args(argc, argv, "13", &path, &mountpoint, &reload, &prepend);
     SafeStringValue(path);
     if (mountpoint != Qnil) SafeStringValue(mountpoint);
     
     const char *mp = (mountpoint == Qnil) ? 0 : RSTRING_PTR(mountpoint);
     
-    bool rl = true;
-    if (reload != Qnil)
-        rb_bool_arg(reload, &rl);
-    
-    shState->fileSystem().addPath(RSTRING_PTR(path), mp, rl);
-    
+    try {
+        bool rl = true;
+        if (reload != Qnil)
+            rb_bool_arg(reload, &rl);
+        
+        bool pp = false;
+        if (prepend != Qnil)
+            rb_bool_arg(prepend, &pp);
+        
+        shState->fileSystem().addPath(RSTRING_PTR(path), mp, rl, pp);
+    } catch (Exception &e) {
+        raiseRbExc(e);
+    }
     return path;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(mkxpRemovePath) {
+RB_METHOD(mkxpRemovePath) {
     RB_UNUSED_PARAM;
     
     VALUE path, reload;
     rb_scan_args(argc, argv, "11", &path, &reload);
     SafeStringValue(path);
     
-    bool rl = true;
-    if (reload != Qnil)
-        rb_bool_arg(reload, &rl);
-    
-    shState->fileSystem().removePath(RSTRING_PTR(path), rl);
-    
+    try {
+        bool rl = true;
+        if (reload != Qnil)
+            rb_bool_arg(reload, &rl);
+        
+        shState->fileSystem().removePath(RSTRING_PTR(path), rl);
+    } catch (Exception &e) {
+        raiseRbExc(e);
+    }
     return path;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(mkxpFileExists) {
     RB_UNUSED_PARAM;
@@ -608,25 +607,24 @@ RB_METHOD(mkxpSetDefaultFontFamily) {
     return Qnil;
 }
 
-RB_METHOD_GUARD(mkxpStringToUTF8) {
+RB_METHOD(mkxpStringToUTF8) {
     RB_UNUSED_PARAM;
     
     rb_check_argc(argc, 0);
     
     std::string ret(RSTRING_PTR(self), RSTRING_LEN(self));
-    ret = Encoding::convertString(ret);
+    GUARD_EXC(ret = Encoding::convertString(ret); );
     
     return rb_utf8_str_new(ret.c_str(), ret.length());
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(mkxpStringToUTF8Bang) {
+RB_METHOD(mkxpStringToUTF8Bang) {
     RB_UNUSED_PARAM;
     
     rb_check_argc(argc, 0);
     
     std::string ret(RSTRING_PTR(self), RSTRING_LEN(self));
-    ret = Encoding::convertString(ret);
+    GUARD_EXC(ret = Encoding::convertString(ret); );
     
     rb_str_resize(self, ret.length());
     memcpy(RSTRING_PTR(self), ret.c_str(), RSTRING_LEN(self));
@@ -637,7 +635,6 @@ RB_METHOD_GUARD(mkxpStringToUTF8Bang) {
     
     return self;
 }
-RB_METHOD_GUARD_END
 
 #ifdef __APPLE__
 #define OPENCMD "open "
@@ -650,7 +647,7 @@ RB_METHOD_GUARD_END
 #define OPENARGS ""
 #endif
 
-RB_METHOD_GUARD(mkxpLaunch) {
+RB_METHOD(mkxpLaunch) {
     RB_UNUSED_PARAM;
     
     VALUE cmdname, args;
@@ -683,12 +680,11 @@ RB_METHOD_GUARD(mkxpLaunch) {
     }
     
     if (std::system(command.c_str()) != 0) {
-        throw Exception(Exception::MKXPError, "Failed to launch \"%s\"", RSTRING_PTR(cmdname));
+        raiseRbExc(Exception(Exception::MKXPError, "Failed to launch \"%s\"", RSTRING_PTR(cmdname)));
     }
     
     return RUBY_Qnil;
 }
-RB_METHOD_GUARD_END
 
 json5pp::value loadUserSettings() {
     json5pp::value ret;
@@ -732,7 +728,7 @@ RB_METHOD(mkxpGetJSONSetting) {
     
 }
 
-RB_METHOD_GUARD(mkxpSetJSONSetting) {
+RB_METHOD(mkxpSetJSONSetting) {
     RB_UNUSED_PARAM;
     
     VALUE sname, svalue;
@@ -746,7 +742,6 @@ RB_METHOD_GUARD(mkxpSetJSONSetting) {
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(mkxpGetAllJSONSettings) {
     RB_UNUSED_PARAM;
@@ -767,21 +762,15 @@ static VALUE rgssMainRescue(VALUE arg, VALUE exc) {
     return Qnil;
 }
 
-static bool processReset(bool rubyExc) {
-	const char *str = "Audio.__reset__; Graphics.__reset__;";
-	
-	if (rubyExc) {
-		rb_eval_string(str);
-	} else {
-		int state;
-		rb_eval_string_protect(str, &state);
-		return state;
-	}
-	
-	return 0;
+static void processReset() {
+    shState->graphics().reset();
+    shState->audio().reset();
+    
+    shState->rtData().rqReset.clear();
+    shState->graphics().repaintWait(shState->rtData().rqResetFinish, false);
 }
 
-RB_METHOD_GUARD(mriRgssMain) {
+RB_METHOD(mriRgssMain) {
     RB_UNUSED_PARAM;
     
     while (true) {
@@ -799,16 +788,15 @@ RB_METHOD_GUARD(mriRgssMain) {
             break;
         
         if (rb_obj_class(exc) == getRbData()->exc[Reset])
-            processReset(true);
+            processReset();
         else
             rb_exc_raise(exc);
     }
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(mriRgssStop) {
+RB_METHOD(mriRgssStop) {
     RB_UNUSED_PARAM;
     
     while (true)
@@ -816,7 +804,6 @@ RB_METHOD_GUARD(mriRgssStop) {
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(_kernelCaller) {
     RB_UNUSED_PARAM;
@@ -903,45 +890,45 @@ bool evalScript(VALUE string, const char *filename)
 
 #define SCRIPT_SECTION_FMT (rgssVer >= 3 ? "{%04ld}" : "Section%03ld")
 
-static void runRMXPScripts(BacktraceData &btData) {
+static VALUE scriptArray = Qnil;
+static bool preloadScriptsExecuted = true;
+static VALUE createScriptsArray() {
+    if (preloadScriptsExecuted)
+        return scriptArray;
+    
     const Config &conf = shState->rtData().config;
     const std::string &scriptPack = conf.game.scripts;
     
     if (scriptPack.empty()) {
-        showMsg("No script file has been specified. Check the game's INI and try again.");
-        return;
+        throw Exception(Exception::MKXPError,
+                        "No script file has been specified. Check the game's INI and try again.");
     }
     
     if (!shState->fileSystem().exists(scriptPack.c_str())) {
-        showMsg("Unable to load scripts from '" + scriptPack + "'");
-        return;
+        throw Exception(Exception::MKXPError, "Unable to load scripts from '%s'", scriptPack.c_str());
     }
     
-    VALUE scriptArray;
+    VALUE scriptArrayTmp;
     
     /* We checked if Scripts.rxdata exists, but something might
      * still go wrong */
     try {
-        scriptArray = kernelLoadDataInt(scriptPack.c_str(), false, false);
+        scriptArrayTmp = kernelLoadDataInt(scriptPack.c_str(), false, false);
     } catch (const Exception &e) {
-        showMsg(std::string("Failed to read script data: ") + e.msg);
-        return;
+        throw Exception(Exception::MKXPError, "Failed to read script data: ", e.msg.c_str());
     }
     
-    if (!RB_TYPE_P(scriptArray, RUBY_T_ARRAY)) {
-        showMsg("Failed to read script data");
-        return;
+    if (!RB_TYPE_P(scriptArrayTmp, RUBY_T_ARRAY)) {
+        throw Exception(Exception::MKXPError, "Failed to read script data");
     }
     
-    rb_gv_set("$RGSS_SCRIPTS", scriptArray);
-    
-    long scriptCount = RARRAY_LEN(scriptArray);
+    long scriptCount = RARRAY_LEN(scriptArrayTmp);
     
     std::string decodeBuffer;
     decodeBuffer.resize(0x1000);
     
     for (long i = 0; i < scriptCount; ++i) {
-        VALUE script = rb_ary_entry(scriptArray, i);
+        VALUE script = rb_ary_entry(scriptArrayTmp, i);
         
         if (!RB_TYPE_P(script, RUBY_T_ARRAY))
             continue;
@@ -976,7 +963,7 @@ static void runRMXPScripts(BacktraceData &btData) {
             snprintf(buffer, sizeof(buffer), "Error decoding script %ld: '%s'", i,
                      RSTRING_PTR(scriptName));
             
-            showMsg(buffer);
+            throw Exception(Exception::MKXPError, buffer);
             
             break;
         }
@@ -984,10 +971,42 @@ static void runRMXPScripts(BacktraceData &btData) {
         rb_ary_store(script, 3, rb_utf8_str_new_cstr(decodeBuffer.c_str()));
     }
     
+    scriptArray = scriptArrayTmp;
+    rb_gv_set("$RGSS_SCRIPTS", scriptArray);
+    rb_iv_set(rb_mKernel, "RGSS_SCRIPTS", scriptArray);
+    return scriptArray;
+}
+
+RB_METHOD(mkxpRegenerateScriptsArr) {
+    RB_UNUSED_PARAM;
+    
+    try {
+        return createScriptsArray();
+    } catch (Exception &e) {
+        raiseRbExc(e);
+        return RUBY_Qnil;
+    }
+}
+
+static void runRMXPScripts(BacktraceData &btData) {
+    const Config &conf = shState->rtData().config;
+    
+    preloadScriptsExecuted = false;
+    try {
+        createScriptsArray();
+    } catch (Exception &e) {
+        showMsg(e.msg);
+        return;
+    }
+    
     /* Execute preloaded scripts */
     for (std::vector<std::string>::const_iterator i = conf.preloadScripts.begin();
          i != conf.preloadScripts.end(); ++i)
         runCustomScript(*i);
+    
+    preloadScriptsExecuted = true;
+    
+    long scriptCount = RARRAY_LEN(scriptArray);
     
     VALUE exc = rb_gv_get("$!");
     if (exc != Qnil)
@@ -1049,8 +1068,7 @@ static void runRMXPScripts(BacktraceData &btData) {
         if (rb_obj_class(exc) != getRbData()->exc[Reset])
             break;
         
-        if (processReset(false))
-            break;
+        processReset();
     }
 }
 
@@ -1259,6 +1277,6 @@ static void mriBindingExecute() {
     shState->rtData().rqTermAck.set();
 }
 
-static void mriBindingTerminate() { throw Exception(Exception::SystemExit, " "); }
+static void mriBindingTerminate() { rb_raise(rb_eSystemExit, " "); }
 
-static void mriBindingReset() { throw Exception(Exception::Reset, " "); }
+static void mriBindingReset() { rb_raise(getRbData()->exc[Reset], " "); }

@@ -37,14 +37,13 @@ RB_METHOD(inputDelta) {
     return rb_float_new(shState->input().getDelta());
 }
 
-RB_METHOD_GUARD(inputUpdate) {
+RB_METHOD(inputUpdate) {
     RB_UNUSED_PARAM;
     
     shState->input().update();
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 static int getButtonArg(VALUE *argv) {
     int num;
@@ -77,7 +76,7 @@ static int getScancodeArg(VALUE *argv) {
     try {
         code = strToScancode[scancode];
     } catch (...) {
-        throw Exception(Exception::RuntimeError, "%s is not a valid name of an SDL scancode.", scancode);
+        rb_raise(rb_eRuntimeError, "%s is not a valid name of an SDL scancode.", scancode);
     }
     
     return code;
@@ -89,36 +88,10 @@ static int getControllerButtonArg(VALUE *argv) {
     try {
         btn = strToGCButton[button];
     } catch (...) {
-        throw Exception(Exception::RuntimeError, "%s is not a valid name of an SDL Controller button.", button);
+        rb_raise(rb_eRuntimeError, "%s is not a valid name of an SDL Controller button.", button);
     }
     
     return btn;
-}
-
-const char* prefixButton = "pad_";
-const char* prefixAxis = "axis_";
-
-static VALUE sourceDescToRubyString(SourceDesc input) {
-    VALUE inputValue;
-    switch(input.type) {
-        case Key:
-            inputValue = rb_str_new_cstr(SDL_GetScancodeName(input.d.scan));
-            break;
-        case CButton:
-            // Concatenate button prefix to name
-            inputValue = rb_str_new_cstr(prefixButton);
-            rb_str_concat(inputValue, rb_str_new_cstr(SDL_GameControllerGetStringForButton(input.d.cb)));
-            break;
-        case CAxis:
-            // Concatenate axis prefix to name
-            inputValue = rb_str_new_cstr(prefixAxis);
-            rb_str_concat(inputValue, rb_str_new_cstr(SDL_GameControllerGetStringForAxis(input.d.ca.axis)));
-            rb_str_concat(inputValue, rb_str_new_cstr(input.d.ca.dir == Negative ? "-" : "+"));
-            break;
-        default:
-            inputValue = Qnil;
-    }
-    return inputValue;
 }
 
 RB_METHOD(inputPress) {
@@ -199,7 +172,7 @@ RB_METHOD(inputRepeatTime) {
     return rb_float_new(shState->input().repeatTime(num));
 }
 
-RB_METHOD_GUARD(inputPressEx) {
+RB_METHOD(inputPressEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -212,9 +185,8 @@ RB_METHOD_GUARD(inputPressEx) {
     
     return rb_bool_new(shState->input().isPressedEx(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputTriggerEx) {
+RB_METHOD(inputTriggerEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -227,9 +199,8 @@ RB_METHOD_GUARD(inputTriggerEx) {
     
     return rb_bool_new(shState->input().isTriggeredEx(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputRepeatEx) {
+RB_METHOD(inputRepeatEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -242,9 +213,8 @@ RB_METHOD_GUARD(inputRepeatEx) {
     
     return rb_bool_new(shState->input().isRepeatedEx(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputReleaseEx) {
+RB_METHOD(inputReleaseEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -257,9 +227,8 @@ RB_METHOD_GUARD(inputReleaseEx) {
     
     return rb_bool_new(shState->input().isReleasedEx(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputCountEx) {
+RB_METHOD(inputCountEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -272,9 +241,8 @@ RB_METHOD_GUARD(inputCountEx) {
     
     return UINT2NUM(shState->input().repeatcount(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputRepeatTimeEx) {
+RB_METHOD(inputRepeatTimeEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -287,7 +255,6 @@ RB_METHOD_GUARD(inputRepeatTimeEx) {
     
     return rb_float_new(shState->input().repeatTimeEx(NUM2INT(button), 1));
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(inputDir4) {
     RB_UNUSED_PARAM;
@@ -384,160 +351,6 @@ RB_METHOD(inputControllerPowerLevel) {
     return ret;
 }
 
-RB_METHOD(inputKeyMapping) {
-    RB_UNUSED_PARAM;
-    
-    rb_check_argc(argc, 1);
-    
-    VALUE button;
-    rb_scan_args(argc, argv, "1", &button);
-
-    VALUE keyHash = rb_hash_new();
-    VALUE kbmKeys = rb_ary_new();
-    VALUE gamepadKeys = rb_ary_new();
-    rb_hash_aset(keyHash, M_SYMBOL("KBM"), kbmKeys);
-    rb_hash_aset(keyHash, M_SYMBOL("GAMEPAD"), gamepadKeys);
-
-    BDescVec binds;
-	shState->rtData().bindingUpdateMsg.get(binds);
-    int num = getButtonArg(&button);
-    for (size_t i = 0; i < binds.size(); ++i)
-    {
-        if(binds[i].target == num) {
-            switch(binds[i].src.type) {
-                case Invalid:
-                    break;
-                case Key:
-                    rb_ary_push(kbmKeys, rb_str_new_cstr(SDL_GetScancodeName(binds[i].src.d.scan)));
-                    break;
-                case CButton:
-                    rb_ary_push(gamepadKeys, rb_str_new_cstr(shState->input().getButtonName(binds[i].src.d.cb)));
-                    break;
-                case CAxis:
-                    rb_ary_push(gamepadKeys, rb_str_new_cstr(shState->input().getAxisName(binds[i].src.d.ca.axis)));
-                    break;
-                default:
-                    break;
-            }
-        }
-    } 
-    
-    return keyHash;
-}
-
-RB_METHOD(inputLastDevice) {
-    RB_UNUSED_PARAM;    
-    
-    return M_SYMBOL(shState->eThread().getLastInputDevice().c_str());
-}
-
-RB_METHOD(inputGetBindings) {
-    RB_UNUSED_PARAM;
-    
-    rb_check_argc(argc, 1);
-    
-    VALUE button;
-    rb_scan_args(argc, argv, "1", &button);
-    // Convert Input symbol to the enum used by buttonCodeHash
-    int num = getButtonArg(&button);
-    
-    VALUE bindings = rb_ary_new();
-
-    BDescVec binds;
-    shState->rtData().bindingUpdateMsg.get(binds);
-
-    for (size_t i = 0; i < binds.size(); ++i)
-    {
-        if(binds[i].target != num) continue;
-
-        VALUE binding = sourceDescToRubyString(binds[i].src);
-        rb_ary_push(bindings, binding);
-    }
-
-    return bindings;
-}
-
-RB_METHOD(inputApplyBindings) {
-    RB_UNUSED_PARAM;
-
-    rb_check_argc(argc, 2);
-
-    VALUE button, inputArray;
-    rb_scan_args(argc, argv, "11", &button, &inputArray);
-
-    // Convert Input symbol to the enum used by buttonCodeHash
-    Input::ButtonCode num = (Input::ButtonCode) getButtonArg(&button);
-
-    BDescVec binds;
-    shState->rtData().bindingUpdateMsg.get(binds);
-
-    // Clear existing bindings for this input
-    binds.erase(std::remove_if(binds.begin(), binds.end(), [num](BindingDesc x) { return x.target == num; }), binds.end());
-
-    // Add new bindings
-    long length = rb_array_len(inputArray);
-    for(long i = 0; i < length; i++)
-    {
-        VALUE binding = rb_ary_entry(inputArray, i);
-        BindingDesc newBinding;
-        newBinding.target = num;
-
-        char* bindingString = RSTRING_PTR(binding);
-        if(strncmp(prefixAxis, bindingString, strlen(prefixAxis)) == 0) {
-            newBinding.src.type = CAxis;
-            // Treat last character as direction
-            size_t len = strlen(bindingString);
-            newBinding.src.d.ca.dir = (AxisDir) (bindingString[len - 1] == '-' ? Negative : Positive);
-            // Cut out the direction character
-            bindingString[len - 1] = '\0';
-            // Skip the prefix, leaving behind the SDL-compatible axis name
-            newBinding.src.d.ca.axis = SDL_GameControllerGetAxisFromString(bindingString + strlen(prefixAxis));
-            // Restore the original direction character in case someone wants to use the information fed into this
-            bindingString[len - 1] = newBinding.src.d.ca.dir == Negative ? '-' : '+';
-        } else if(strncmp(prefixButton, bindingString, strlen(prefixButton)) == 0) {
-            // Gamepad Input
-            newBinding.src.type = CButton;
-            // Skip the prefix, leaving behind the SDL-compatible button name
-            newBinding.src.d.cb = SDL_GameControllerGetButtonFromString(bindingString + strlen(prefixButton));
-        } else {
-            // No prefix, assume regular key
-            newBinding.src.type = Key;
-            newBinding.src.d.scan = SDL_GetScancodeFromName(bindingString);
-        }
-        binds.push_back(newBinding);
-    }
-
-    // Update the bindings in memory
-    shState->rtData().bindingUpdateMsg.post(binds);
-
-    return Qnil;
-}
-
-RB_METHOD(inputSaveBindings) {
-    BDescVec binds;
-    shState->rtData().bindingUpdateMsg.get(binds);
-    storeBindings(binds, shState->config());
-    return Qnil;
-}
-
-RB_METHOD(inputResetBindings) {
-    BDescVec binds = genDefaultBindings(shState->config());
-    shState->rtData().bindingUpdateMsg.post(binds);
-    return Qnil;
-}
-
-RB_METHOD(inputClearLast) {
-    shState->eThread().clearLastInput();
-    return Qnil;
-}
-
-RB_METHOD(inputLast) {
-    RB_UNUSED_PARAM;
-
-    SourceDesc lastInput = shState->eThread().getLastInput();
-    return sourceDescToRubyString(lastInput);
-}
-
 #define AXISFUNC(n, ax1, ax2) \
 RB_METHOD(inputControllerGet##n##Axis) {\
 RB_UNUSED_PARAM;\
@@ -557,7 +370,7 @@ AXISFUNC(Trigger, TRIGGERLEFT, TRIGGERRIGHT);
 #undef POWERCASE
 #undef M_SYMBOL
 
-RB_METHOD_GUARD(inputControllerPressEx) {
+RB_METHOD(inputControllerPressEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -570,9 +383,8 @@ RB_METHOD_GUARD(inputControllerPressEx) {
     
     return rb_bool_new(shState->input().controllerIsPressedEx(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputControllerTriggerEx) {
+RB_METHOD(inputControllerTriggerEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -585,9 +397,8 @@ RB_METHOD_GUARD(inputControllerTriggerEx) {
     
     return rb_bool_new(shState->input().controllerIsTriggeredEx(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputControllerRepeatEx) {
+RB_METHOD(inputControllerRepeatEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -600,9 +411,8 @@ RB_METHOD_GUARD(inputControllerRepeatEx) {
     
     return rb_bool_new(shState->input().controllerIsRepeatedEx(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputControllerReleaseEx) {
+RB_METHOD(inputControllerReleaseEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -615,9 +425,8 @@ RB_METHOD_GUARD(inputControllerReleaseEx) {
     
     return rb_bool_new(shState->input().controllerIsReleasedEx(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputControllerCountEx) {
+RB_METHOD(inputControllerCountEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -630,9 +439,8 @@ RB_METHOD_GUARD(inputControllerCountEx) {
     
     return rb_bool_new(shState->input().controllerRepeatcount(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputControllerRepeatTimeEx) {
+RB_METHOD(inputControllerRepeatTimeEx) {
     RB_UNUSED_PARAM;
     
     VALUE button;
@@ -645,7 +453,6 @@ RB_METHOD_GUARD(inputControllerRepeatTimeEx) {
     
     return rb_float_new(shState->input().controllerRepeatTimeEx(NUM2INT(button)));
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(inputControllerRawButtonStates) {
     RB_UNUSED_PARAM;
@@ -697,13 +504,18 @@ RB_METHOD(inputGets) {
     return ret;
 }
 
-RB_METHOD_GUARD(inputGetClipboard) {
+RB_METHOD(inputGetClipboard) {
     RB_UNUSED_PARAM;
-    return rb_utf8_str_new_cstr(shState->input().getClipboardText());
+    VALUE ret;
+    try {
+        ret = rb_utf8_str_new_cstr(shState->input().getClipboardText());
+    } catch (const Exception &e) {
+        raiseRbExc(e);
+    }
+    return ret;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(inputSetClipboard) {
+RB_METHOD(inputSetClipboard) {
     RB_UNUSED_PARAM;
     
     VALUE str;
@@ -711,11 +523,13 @@ RB_METHOD_GUARD(inputSetClipboard) {
     
     SafeStringValue(str);
     
-    shState->input().setClipboardText(RSTRING_PTR(str));
-    
+    try {
+        shState->input().setClipboardText(RSTRING_PTR(str));
+    } catch (const Exception &e) {
+        raiseRbExc(e);
+    }
     return str;
 }
-RB_METHOD_GUARD_END
 
 struct {
     const char *str;
@@ -800,16 +614,6 @@ void inputBindingInit() {
     
     _rb_define_module_function(module, "clipboard", inputGetClipboard);
     _rb_define_module_function(module, "clipboard=", inputSetClipboard);
-
-    _rb_define_module_function(module, "key_mapping", inputKeyMapping);
-    _rb_define_module_function(module, "last_device", inputLastDevice);
-
-    _rb_define_module_function(module, "last", inputLast);
-    _rb_define_module_function(module, "clear_last", inputClearLast);
-    _rb_define_module_function(module, "bindings", inputGetBindings);
-    _rb_define_module_function(module, "apply_bindings", inputApplyBindings);
-    _rb_define_module_function(module, "save_bindings", inputSaveBindings);
-    _rb_define_module_function(module, "reset_bindings", inputResetBindings);
     
     if (rgssVer >= 3) {
         VALUE symHash = rb_hash_new();

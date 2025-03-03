@@ -1,4 +1,4 @@
-project('mkxp-z', 'c', 'cpp', version: '2.4.2', meson_version: '>=0.56.0', default_options: ['cpp_std=c++14', 'buildtype=debug'])
+project('mkxp-z', 'c', 'cpp', version: '2.4.2', meson_version: '>=0.56.0', default_options: ['cpp_std=c++14', 'buildtype=release'])
 
 host_system = host_machine.system()
 
@@ -27,7 +27,6 @@ global_args += '-DMKXPZ_BUILD_MESON'
 global_args += '-DMKXPZ_VERSION="@0@"'.format(meson.project_version())
 global_args += '-DMKXPZ_GIT_HASH="@0@"'.format(git_hash)
 global_args += '-DHAVE_NANOSLEEP'
-global_args += '-DDEBUG'
 # ====================
 # Ext libs
 # ====================
@@ -121,11 +120,12 @@ subdir('binding')
 subdir('shader')
 subdir('assets')
 
-global_include_dirs += include_directories('src', 'binding', 'vendor/ANGLE')
+global_include_dirs += include_directories('src', 'binding')
 
 rpath = ''
 
 if host_system == 'windows'
+    windows_resource_directory = '../' + get_option('windows_resource_directory')
     subdir('windows')
     global_sources += windows_resources
     global_include_dirs += include_directories('windows')

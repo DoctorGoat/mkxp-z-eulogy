@@ -32,7 +32,7 @@
     }                                                                          \
   }
 
-RB_METHOD_GUARD(CUSLSetStat) {
+RB_METHOD(CUSLSetStat) {
   RB_UNUSED_PARAM;
 
   VALUE name, stat;
@@ -47,12 +47,11 @@ RB_METHOD_GUARD(CUSLSetStat) {
     STEAMSHIM_setStatI(RSTRING_PTR(name), (int)NUM2INT(stat));
     STEAMSHIM_GET_OK(SHIMEVENT_SETSTATI, ret);
   } else {
-    throw Exception(Exception::TypeError,
+    rb_raise(rb_eTypeError,
              "Statistic value must be either an integer or float.");
   }
   return rb_bool_new(ret);
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(CUSLGetStatI) {
   RB_UNUSED_PARAM;

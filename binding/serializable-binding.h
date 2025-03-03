@@ -30,24 +30,13 @@ template<class C>
 static VALUE
 serializableDump(int, VALUE *, VALUE self)
 {
-	// In practice, this is always a Serializable except for Vec2 and Vec4. I had compilation issues trying to make
-	// those structs extend Serializable, so I'm making this concession for convenience.
-	C *s = getPrivateData<C>(self);
+	Serializable *s = getPrivateData<C>(self);
 
 	int dataSize = s->serialSize();
 
 	VALUE data = rb_str_new(0, dataSize);
 
-	Exception *exc = 0;
-	try{
-		s->serialize(RSTRING_PTR(data));
-	} catch (const Exception &e) {
-		exc = new Exception(e);
-	}
-
-	if (exc) {
-		raiseRbExc(exc);
-	}
+	GUARD_EXC( s->serialize(RSTRING_PTR(data)); );
 
 	return data;
 }

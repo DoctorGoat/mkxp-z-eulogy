@@ -42,7 +42,7 @@ RB_METHOD(viewportElementGetViewport)
 }
 
 template<class C>
-RB_METHOD_GUARD(viewportElementSetViewport)
+RB_METHOD(viewportElementSetViewport)
 {
 	RB_UNUSED_PARAM;
 
@@ -68,7 +68,6 @@ RB_METHOD_GUARD(viewportElementSetViewport)
 
 	return viewportObj;
 }
-RB_METHOD_GUARD_END
 
 template<class C>
 static C *

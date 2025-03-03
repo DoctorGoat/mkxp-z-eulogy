@@ -19,11 +19,16 @@
  ** along with mkxp.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include "graphics.h"
 #include "sharedstate.h"
 #include "binding-util.h"
 #include "binding-types.h"
 #include "exception.h"
+
+#if RAPI_MAJOR >= 2
+#include <ruby/thread.h>
+#endif
 
 RB_METHOD(graphicsDelta) {
     RB_UNUSED_PARAM;
@@ -33,12 +38,14 @@ RB_METHOD(graphicsDelta) {
     return ret;
 }
 
-RB_METHOD_GUARD(graphicsUpdate)
+RB_METHOD(graphicsUpdate)
 {
     RB_UNUSED_PARAM;
 #if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void*) -> void* {
-        GFX_GUARD_EXC( shState->graphics().update(); );
+    rb_thread_call_without_gvl([](void*) -> void* {
+        GFX_LOCK;
+        shState->graphics().update();
+        GFX_UNLOCK;
         return 0;
     }, 0, 0, 0);
 #else
@@ -46,7 +53,6 @@ RB_METHOD_GUARD(graphicsUpdate)
 #endif
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(graphicsAverageFrameRate)
 {
@@ -57,30 +63,18 @@ RB_METHOD(graphicsAverageFrameRate)
     return ret;
 }
 
-RB_METHOD_GUARD(graphicsFreeze)
+RB_METHOD(graphicsFreeze)
 {
     RB_UNUSED_PARAM;
     
-#if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void*) -> void* {
-        GFX_GUARD_EXC( shState->graphics().freeze(); );
-        return 0;
-    }, 0, 0, 0);
-#else
+    GFX_LOCK;
     shState->graphics().freeze();
-#endif
+    GFX_UNLOCK;
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-typedef struct {
-    int duration;
-    const char *filename;
-    int vague;
-} TransitionArgs;
-
-RB_METHOD_GUARD(graphicsTransition)
+RB_METHOD(graphicsTransition)
 {
     RB_UNUSED_PARAM;
     
@@ -90,24 +84,10 @@ RB_METHOD_GUARD(graphicsTransition)
     
     rb_get_args(argc, argv, "|izi", &duration, &filename, &vague RB_ARG_END);
     
-    TransitionArgs args = {duration, filename, vague};
-    
-#if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void *args) -> void* {
-        TransitionArgs &a = *((TransitionArgs*)args);
-        GFX_GUARD_EXC( shState->graphics().transition(a.duration,
-                                                      a.filename,
-                                                      a.vague
-                                                     ); );
-        return 0;
-    }, &args, 0, 0);
-#else
     GFX_GUARD_EXC( shState->graphics().transition(duration, filename, vague); )
-#endif
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(graphicsFrameReset)
 {
@@ -199,15 +179,17 @@ RB_METHOD(graphicsDisplayHeight)
     return rb_fix_new(shState->graphics().displayHeight());
 }
 
-RB_METHOD_GUARD(graphicsWait)
+RB_METHOD(graphicsWait)
 {
     RB_UNUSED_PARAM;
     
     int duration;
     rb_get_args(argc, argv, "i", &duration RB_ARG_END);
 #if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void* d) -> void* {
-        GFX_GUARD_EXC( shState->graphics().wait(*(int*)d); );
+    rb_thread_call_without_gvl([](void* d) -> void* {
+        GFX_LOCK;
+        shState->graphics().wait(*(int*)d);
+        GFX_UNLOCK;
         return 0;
     }, (int*)&duration, 0, 0);
 #else
@@ -215,51 +197,38 @@ RB_METHOD_GUARD(graphicsWait)
 #endif
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(graphicsFadeout)
+RB_METHOD(graphicsFadeout)
 {
     RB_UNUSED_PARAM;
     
     int duration;
     rb_get_args(argc, argv, "i", &duration RB_ARG_END);
     
-#if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void* d) -> void* {
-        GFX_GUARD_EXC( shState->graphics().fadeout(*(int*)d); );
-        return 0;
-    }, (int*)&duration, 0, 0);
-#else
+    GFX_LOCK;
     shState->graphics().fadeout(duration);
-#endif
+    GFX_UNLOCK;
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
-RB_METHOD_GUARD(graphicsFadein)
+RB_METHOD(graphicsFadein)
 {
     RB_UNUSED_PARAM;
     
     int duration;
     rb_get_args(argc, argv, "i", &duration RB_ARG_END);
     
-#if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void* d) -> void* {
-        GFX_GUARD_EXC( shState->graphics().fadein(*(int*)d); );
-        return 0;
-    }, (int*)&duration, 0, 0);
-#else
+    GFX_LOCK;
     shState->graphics().fadein(duration);
-#endif
+    GFX_UNLOCK;
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 void bitmapInitProps(Bitmap *b, VALUE self);
 
-RB_METHOD_GUARD(graphicsSnapToBitmap)
+RB_METHOD(graphicsSnapToBitmap)
 {
     RB_UNUSED_PARAM;
     
@@ -272,7 +241,6 @@ RB_METHOD_GUARD(graphicsSnapToBitmap)
     
     return obj;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(graphicsResizeScreen)
 {
@@ -304,15 +272,16 @@ RB_METHOD(graphicsResizeWindow)
     return Qnil;
 }
 
-RB_METHOD_GUARD(graphicsReset)
+RB_METHOD(graphicsReset)
 {
     RB_UNUSED_PARAM;
     
-    GFX_GUARD_EXC( shState->graphics().reset(); );
+    GFX_LOCK;
+    shState->graphics().reset();
+    GFX_UNLOCK;
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 RB_METHOD(graphicsCenter)
 {
@@ -326,28 +295,26 @@ typedef struct {
     const char *filename;
     int volume;
     bool skippable;
-    void *shaderArr;
 } PlayMovieArgs;
 
 void *playMovieInternal(void *args) {
     PlayMovieArgs *a = (PlayMovieArgs*)args;
-    GFX_GUARD_EXC( shState->graphics().playMovie(a->filename, a->volume, a->skippable, a->shaderArr); );
-
-    // Signals for shutdown or reset only make playMovie quit early,
-    // so check again
-    shState->checkShutdown();
-    shState->checkReset();
-
+    GFX_GUARD_EXC(
+                  shState->graphics().playMovie(a->filename, a->volume, a->skippable);
+                  
+                  // Signals for shutdown or reset only make playMovie quit early,
+                  // so check again
+                  shState->graphics().update();
+                  );
     return 0;
 }
 
-RB_METHOD_GUARD(graphicsPlayMovie)
+RB_METHOD(graphicsPlayMovie)
 {
     RB_UNUSED_PARAM;
     
-    VALUE filename, volumeArg, skippable, shaderArr;
-    rb_scan_args(argc, argv, "13", &filename, &volumeArg, &skippable, &shaderArr);
-
+    VALUE filename, volumeArg, skippable;
+    rb_scan_args(argc, argv, "12", &filename, &volumeArg, &skippable);
     SafeStringValue(filename);
     
     bool skip;
@@ -357,25 +324,23 @@ RB_METHOD_GUARD(graphicsPlayMovie)
 
     PlayMovieArgs args{};
     args.filename = RSTRING_PTR(filename);
-    args.volume = (volumeArg == Qnil) ? 100 : NUM2INT(volumeArg);
+    args.volume = (volumeArg == Qnil) ? 100 : NUM2INT(volumeArg);;
     args.skippable = skip;
-    args.shaderArr = (shaderArr == Qnil) ? 0 : &shaderArr;
 #if RAPI_MAJOR >= 2
-    drop_gvl_guard(playMovieInternal, &args, 0, 0);
+    rb_thread_call_without_gvl(playMovieInternal, &args, 0, 0);
 #else
     playMovieInternal(&args);
 #endif
     
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 void graphicsScreenshotInternal(const char *filename)
 {
     GFX_GUARD_EXC(shState->graphics().screenshot(filename););
 }
 
-RB_METHOD_GUARD(graphicsScreenshot)
+RB_METHOD(graphicsScreenshot)
 {
     RB_UNUSED_PARAM;
 
@@ -384,7 +349,7 @@ RB_METHOD_GUARD(graphicsScreenshot)
     SafeStringValue(filename);
     
 #if RAPI_MAJOR >= 2
-    drop_gvl_guard([](void* fn) -> void* {
+    rb_thread_call_without_gvl([](void* fn) -> void* {
         graphicsScreenshotInternal((const char*)fn);
         return 0;
     }, (void*)RSTRING_PTR(filename), 0, 0);
@@ -393,7 +358,6 @@ RB_METHOD_GUARD(graphicsScreenshot)
 #endif
     return Qnil;
 }
-RB_METHOD_GUARD_END
 
 DEF_GRA_PROP_I(FrameRate)
 DEF_GRA_PROP_I(FrameCount)
@@ -404,7 +368,7 @@ DEF_GRA_PROP_B(ShowCursor)
 DEF_GRA_PROP_F(Scale)
 DEF_GRA_PROP_B(Frameskip)
 DEF_GRA_PROP_B(FixedAspectRatio)
-DEF_GRA_PROP_B(SmoothScaling)
+DEF_GRA_PROP_I(SmoothScaling)
 DEF_GRA_PROP_B(IntegerScaling)
 DEF_GRA_PROP_B(LastMileScaling)
 DEF_GRA_PROP_B(Threadsafe)

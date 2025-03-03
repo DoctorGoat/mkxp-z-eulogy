@@ -1,10 +1,13 @@
-ARCH := $(shell uname -m)
+ARCH ?= $(shell uname -m)
+ARCH_OPENSSL ?= $(ARCH)
+ARCH_CFLAGS ?=
+ARCH_CONFIGURE ?= $(shell gcc -dumpmachine)
 
 SDL_FLAGS := ${SDL_FLAGS}
 SDL2_IMAGE_FLAGS := ${SDL2_IMAGE_FLAGS}
 SDL2_TTF_FLAGS := ${SDL2_TTF_FLAGS}
 OPENAL_FLAGS := -DALSOFT_CPUEXT_NEON=no ${OPENAL_FLAGS}
-OPENSSL_FLAGS := linux-$(ARCH) ${OPENSSL_FLAGS}
+OPENSSL_FLAGS := linux-$(ARCH_OPENSSL) ${OPENSSL_FLAGS}
 RUBY_FLAGS := ${RUBY_FLAGS}
 
 BUILD_PREFIX := ${PWD}/build-$(ARCH)
@@ -12,9 +15,9 @@ LIBDIR := $(BUILD_PREFIX)/lib
 INCLUDEDIR := $(BUILD_PREFIX)/include
 DOWNLOADS := ${PWD}/downloads/$(ARCH)
 NPROC := $(shell nproc)
-CFLAGS := -I$(INCLUDEDIR) -flax-vector-conversions -O3
+CFLAGS := -I$(INCLUDEDIR) -flax-vector-conversions -O3 $(ARCH_CFLAGS)
 LDFLAGS := -L$(LIBDIR)
-CC      := gcc
+CC      ?= gcc
 PKG_CONFIG_LIBDIR := $(BUILD_PREFIX)/lib/pkgconfig
 GIT := git
 CLONE := $(GIT) clone -q
@@ -24,14 +27,19 @@ CONFIGURE_ENV := \
 	PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) \
 	CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 
-CONFIGURE_ARGS := --prefix="$(BUILD_PREFIX)"
+CONFIGURE_ARGS := --prefix="$(BUILD_PREFIX)" --host="$(ARCH_CONFIGURE)"
 
+ifdef ARCH_CMAKE_TOOLCHAIN
+	ARCH_CMAKE_ARGS := -DCMAKE_TOOLCHAIN_FILE="${PWD}/$(ARCH_CMAKE_TOOLCHAIN)"
+endif
 CMAKE_ARGS := \
 	-DCMAKE_INSTALL_PREFIX="$(BUILD_PREFIX)" \
 	-DCMAKE_PREFIX_PATH="$(BUILD_PREFIX)" \
 	-DCMAKE_C_FLAGS="$(CFLAGS)" \
-	-DCMAKE_BUILD_TYPE=Release
+	-DCMAKE_BUILD_TYPE=Release \
+	$(ARCH_CMAKE_ARGS)
 
+# TODO: Check if we can disable rubygems, remove prefixes.
 RUBY_CONFIGURE_ARGS := \
 	--enable-install-static-library \
 	--enable-shared \
@@ -81,7 +89,7 @@ $(DOWNLOADS)/vorbis/configure: $(DOWNLOADS)/vorbis/autogen.sh
 	./autogen.sh
 
 $(DOWNLOADS)/vorbis/autogen.sh:
-	$(CLONE) $(GITHUB)/xiph/vorbis $(DOWNLOADS)/vorbis
+	$(CLONE) $(GITHUB)/mkxp-z/vorbis $(DOWNLOADS)/vorbis
 
 
 # Ogg, dependency of Vorbis
@@ -164,7 +172,7 @@ $(DOWNLOADS)/physfs/cmakebuild/Makefile: $(DOWNLOADS)/physfs/CMakeLists.txt
 	$(CMAKE) -DPHYSFS_BUILD_STATIC=true -DPHYSFS_BUILD_SHARED=false
 
 $(DOWNLOADS)/physfs/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/mkxp-z/physfs -b release-3.2.0 $(DOWNLOADS)/physfs
+	$(CLONE) $(GITHUB)/WaywardHeart/physfs -b enumerateSinglePath $(DOWNLOADS)/physfs
 
 # libpng
 libpng: init_dirs $(LIBDIR)/libpng.a
@@ -181,20 +189,6 @@ $(DOWNLOADS)/libpng/Makefile: $(DOWNLOADS)/libpng/configure
 $(DOWNLOADS)/libpng/configure:
 	$(CLONE) $(GITHUB)/mkxp-z/libpng $(DOWNLOADS)/libpng
 
-# libjpeg
-libjpeg: init_dirs $(LIBDIR)/libjpeg.a
-
-$(LIBDIR)/libjpeg.a: $(DOWNLOADS)/libjpeg/cmakebuild/Makefile
-	cd $(DOWNLOADS)/libjpeg/cmakebuild; \
-	make -j$(NPROC); make install
-
-$(DOWNLOADS)/libjpeg/cmakebuild/Makefile: $(DOWNLOADS)/libjpeg/CMakeLists.txt
-	cd $(DOWNLOADS)/libjpeg; mkdir -p cmakebuild; cd cmakebuild; \
-	$(CMAKE) -DENABLE_SHARED=no -DENABLE_STATIC=yes
-
-$(DOWNLOADS)/libjpeg/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/mkxp-z/libjpeg-turbo $(DOWNLOADS)/libjpeg
-
 # SDL2
 sdl2: init_dirs $(LIBDIR)/libSDL2.a
 
@@ -208,28 +202,31 @@ $(DOWNLOADS)/sdl2/cmakebuild/Makefile: $(DOWNLOADS)/sdl2/CMakeLists.txt
 	$(CMAKE) -DBUILD_SHARED_LIBS=no
 
 $(DOWNLOADS)/sdl2/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/Eblo/SDL $(DOWNLOADS)/sdl2 -b mkxp-z-2.28.5
+	$(CLONE) $(GITHUB)/mkxp-z/SDL $(DOWNLOADS)/sdl2 -b mkxp-z-2.28.1
 
-# SDL2 (Image)
-sdl2image: init_dirs sdl2 libpng libjpeg $(LIBDIR)/libSDL2_image.a
+# SDL_image
+sdl2image: init_dirs sdl2 $(LIBDIR)/libSDL2_image.a
 
-$(LIBDIR)/libSDL2_image.a: $(DOWNLOADS)/sdl2_image/Makefile
-	cd $(DOWNLOADS)/sdl2_image; \
+$(LIBDIR)/libSDL2_image.a: $(DOWNLOADS)/sdl2_image/cmakebuild/Makefile
+	cd $(DOWNLOADS)/sdl2_image/cmakebuild; \
 	make -j$(NPROC); make install
 
-$(DOWNLOADS)/sdl2_image/Makefile: $(DOWNLOADS)/sdl2_image/configure
+$(DOWNLOADS)/sdl2_image/cmakebuild/Makefile: $(DOWNLOADS)/sdl2_image/CMakeLists.txt
+	cd $(DOWNLOADS)/sdl2_image; mkdir -p cmakebuild; cd cmakebuild; \
+	$(CMAKE) \
+	-DBUILD_SHARED_LIBS=no \
+	-DSDL2IMAGE_JPG_SAVE=yes \
+	-DSDL2IMAGE_PNG_SAVE=yes \
+	-DSDL2IMAGE_PNG_SHARED=no \
+	-DSDL2IMAGE_JPG_SHARED=no \
+	-DSDL2IMAGE_JXL=yes \
+	-DSDL2IMAGE_JXL_SHARED=no \
+	-DSDL2IMAGE_VENDORED=yes
+
+$(DOWNLOADS)/sdl2_image/CMakeLists.txt:
+	$(CLONE) $(GITHUB)/mkxp-z/SDL_image $(DOWNLOADS)/sdl2_image -b mkxp-z; \
 	cd $(DOWNLOADS)/sdl2_image; \
-	LIBPNG_LIBS="-L$(LIBDIR) -lpng" LIBPNG_CFLAGS="-I$(INCLUDEDIR)" \
-	$(CONFIGURE) --enable-static=true --enable-shared=false \
-	--enable-png=yes --enable-png-shared=no \
-	--enable-jpg=yes --enable-jpg-shared=no \
-	--enable-webp=no $(SDL2_IMAGE_FLAGS)
-
-$(DOWNLOADS)/sdl2_image/configure: $(DOWNLOADS)/sdl2_image/autogen.sh
-	cd $(DOWNLOADS)/sdl2_image; ./autogen.sh
-
-$(DOWNLOADS)/sdl2_image/autogen.sh:
-	$(CLONE) $(GITHUB)/mkxp-z/SDL_image_old $(DOWNLOADS)/sdl2_image -b mkxp-z
+	./external/download.sh
 
 # SDL_sound
 sdlsound: init_dirs sdl2 libogg libvorbis $(LIBDIR)/libSDL2_sound.a
@@ -292,6 +289,20 @@ $(DOWNLOADS)/openal/cmakebuild/Makefile: $(DOWNLOADS)/openal/CMakeLists.txt
 $(DOWNLOADS)/openal/CMakeLists.txt:
 	$(CLONE) $(GITHUB)/mkxp-z/openal-soft $(DOWNLOADS)/openal
 
+# FluidSynth
+fluidsynth: init_dirs $(LIBDIR)/libfluidsynth.a
+
+$(LIBDIR)/libfluidsynth.a: $(DOWNLOADS)/fluidsynth/cmakebuild/Makefile
+	cd $(DOWNLOADS)/fluidsynth/cmakebuild; \
+	make -j$(NPROC); make install
+
+$(DOWNLOADS)/fluidsynth/cmakebuild/Makefile: $(DOWNLOADS)/fluidsynth/CMakeLists.txt
+	cd $(DOWNLOADS)/fluidsynth; mkdir cmakebuild; cd cmakebuild; \
+	$(CMAKE) -DBUILD_SHARED_LIBS=no -Denable-sdl2=no -Denable-readline=no
+
+$(DOWNLOADS)/fluidsynth/CMakeLists.txt:
+	$(CLONE) $(GITHUB)/mkxp-z/fluidsynth-sans-glib $(DOWNLOADS)/fluidsynth
+
 # OpenSSL
 openssl: init_dirs $(LIBDIR)/libssl.a
 $(LIBDIR)/libssl.a: $(DOWNLOADS)/openssl/Makefile
@@ -306,14 +317,14 @@ $(DOWNLOADS)/openssl/Makefile: $(DOWNLOADS)/openssl/Configure
 	--openssldir="$(BUILD_PREFIX)"
 
 $(DOWNLOADS)/openssl/Configure:
-	$(CLONE) $(GITHUB)/openssl/openssl $(DOWNLOADS)/openssl --single-branch --branch OpenSSL_1_1_1i --depth 1
+	$(CLONE) $(GITHUB)/openssl/openssl $(DOWNLOADS)/openssl --single-branch --branch openssl-3.0.12 --depth 1
 
 # Standard ruby
 ruby: init_dirs openssl $(LIBDIR)/libruby.so.3.1
 
 $(LIBDIR)/libruby.so.3.1: $(DOWNLOADS)/ruby/Makefile
 	cd $(DOWNLOADS)/ruby; \
-	make -j$(NPROC); make install
+	make -j$(NPROC); make install DESTDIR="$(BUILD_PREFIX)"
 
 $(DOWNLOADS)/ruby/Makefile: $(DOWNLOADS)/ruby/configure
 	cd $(DOWNLOADS)/ruby; \
@@ -337,5 +348,5 @@ powerwash: clean-downloads
 clean-downloads:
 	-rm -rf downloads
 
-deps-core: libtheora libvorbis pixman libpng libjpeg physfs sdl2 sdl2image sdlsound sdl2ttf openal openssl uchardet iconv
+deps-core: libtheora libvorbis pixman libpng physfs sdl2 sdl2image sdlsound sdl2ttf openal openssl fluidsynth uchardet iconv
 everything: deps-core ruby

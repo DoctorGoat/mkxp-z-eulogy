@@ -5,8 +5,7 @@ LIBDIR := $(BUILD_PREFIX)/lib
 INCLUDEDIR := $(BUILD_PREFIX)/include
 DOWNLOADS := ${PWD}/downloads/$(HOST)
 NPROC := $(shell sysctl -n hw.ncpu)
-# Explicitly including freetype2 dir for now. macOS is having weird issues with ft2build.h
-CFLAGS := -I$(INCLUDEDIR) -I$(INCLUDEDIR)/freetype2 $(TARGETFLAGS) $(DEFINES) -O3
+CFLAGS := -I$(INCLUDEDIR) $(TARGETFLAGS) $(DEFINES) -O3
 LDFLAGS := -L$(LIBDIR)
 CC      := clang -arch $(ARCH)
 PKG_CONFIG_LIBDIR := $(BUILD_PREFIX)/lib/pkgconfig
@@ -93,8 +92,7 @@ $(DOWNLOADS)/vorbis/configure: $(DOWNLOADS)/vorbis/autogen.sh
 	./autogen.sh
 
 $(DOWNLOADS)/vorbis/autogen.sh:
-	$(CLONE) $(GITHUB)/xiph/vorbis $(DOWNLOADS)/vorbis
-	sed -i '' 's/ -force_cpusubtype_ALL / /g' $(DOWNLOADS)/vorbis/configure.ac
+	$(CLONE) $(GITHUB)/mkxp-z/vorbis $(DOWNLOADS)/vorbis
 
 
 # Ogg, dependency of Vorbis
@@ -161,7 +159,7 @@ $(DOWNLOADS)/physfs/cmakebuild/Makefile: $(DOWNLOADS)/physfs/CMakeLists.txt
 	$(CMAKE) -DPHYSFS_BUILD_STATIC=true -DPHYSFS_BUILD_SHARED=false
 
 $(DOWNLOADS)/physfs/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/mkxp-z/physfs -b release-3.2.0 $(DOWNLOADS)/physfs
+	$(CLONE) $(GITHUB)/WaywardHeart/physfs -b enumerateSinglePath $(DOWNLOADS)/physfs
 
 # libpng
 libpng: init_dirs $(LIBDIR)/libpng.a
@@ -191,7 +189,7 @@ $(DOWNLOADS)/sdl2/cmakebuild/Makefile: $(DOWNLOADS)/sdl2/CMakeLists.txt
 	$(CMAKE) -DBUILD_SHARED_LIBS=no
 
 $(DOWNLOADS)/sdl2/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/Eblo/SDL $(DOWNLOADS)/sdl2 -b mkxp-z-2.28.5
+	$(CLONE) $(GITHUB)/mkxp-z/SDL $(DOWNLOADS)/sdl2 -b mkxp-z-2.28.1
 	
 # SDL_image
 sdl2image: init_dirs sdl2 $(LIBDIR)/libSDL2_image.a
@@ -208,11 +206,16 @@ $(DOWNLOADS)/sdl2_image/cmakebuild/Makefile: $(DOWNLOADS)/sdl2_image/CMakeLists.
 	-DSDL2IMAGE_PNG_SAVE=yes \
 	-DSDL2IMAGE_PNG_SHARED=no \
 	-DSDL2IMAGE_JPG_SHARED=no \
-	-DSDL2IMAGE_BACKEND_IMAGEIO=no
+	-DSDL2IMAGE_JXL=yes \
+	-DSDL2IMAGE_JXL_SHARED=no \
+	-DSDL2IMAGE_BACKEND_IMAGEIO=no \
+	-DSDL2IMAGE_VENDORED=yes
 	
 
 $(DOWNLOADS)/sdl2_image/CMakeLists.txt:
-	$(CLONE) $(GITHUB)/mkxp-z/SDL_image $(DOWNLOADS)/sdl2_image -b mkxp-z
+	$(CLONE) $(GITHUB)/mkxp-z/SDL_image $(DOWNLOADS)/sdl2_image -b mkxp-z; \
+	cd $(DOWNLOADS)/sdl2_image; \
+	./external/download.sh
 
 
 # SDL_sound
@@ -295,8 +298,7 @@ $(DOWNLOADS)/openssl/Makefile: $(DOWNLOADS)/openssl/Configure
 	--openssldir="$(BUILD_PREFIX)"
 
 $(DOWNLOADS)/openssl/Configure:
-	$(CLONE) $(GITHUB)/openssl/openssl $(DOWNLOADS)/openssl; \
-	cd $(DOWNLOADS)/openssl --single-branch --branch OpenSSL_1_1_1i --depth 1
+	$(CLONE) $(GITHUB)/openssl/openssl $(DOWNLOADS)/openssl --single-branch --branch openssl-3.0.12 --depth 1
 
 # Standard ruby
 ruby: init_dirs openssl $(LIBDIR)/libruby.3.1.dylib
@@ -318,7 +320,6 @@ $(DOWNLOADS)/ruby/configure: $(DOWNLOADS)/ruby/configure.ac
 
 $(DOWNLOADS)/ruby/configure.ac:
 	$(CLONE) $(GITHUB)/mkxp-z/ruby $(DOWNLOADS)/ruby --single-branch -b mkxp-z-3.1.3 --depth 1;
-	sed -i '' '/: $${PRELOADENV=DYLD_INSERT_LIBRARIES}/g' $(DOWNLOADS)/ruby/configure.ac
 
 # ====
 init_dirs:

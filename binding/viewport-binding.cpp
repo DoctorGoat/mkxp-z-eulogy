@@ -27,8 +27,6 @@
 #include "sharedstate.h"
 #include "viewport.h"
 
-#include "shadable-element-binding.h"
-
 #if RAPI_FULL > 187
 DEF_TYPE(Viewport);
 #else
@@ -60,8 +58,6 @@ RB_METHOD(viewportInitialize) {
         GFX_LOCK;
         v = new Viewport(x, y, width, height);
     }
-
-	shadableElementInitialize<Viewport>(self, v);
     
     setPrivateData(self, v);
     
@@ -113,7 +109,6 @@ void viewportBindingInit() {
     disposableBindingInit<Viewport>(klass);
     flashableBindingInit<Viewport>(klass);
     sceneElementBindingInit<Viewport>(klass);
-	shadableElementBindingInit(klass);
     
     _rb_define_method(klass, "initialize", viewportInitialize);
     _rb_define_method(klass, "_sprite_finalizer", viewportSpriteFinalize);

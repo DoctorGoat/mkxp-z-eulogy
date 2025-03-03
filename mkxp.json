@@ -42,6 +42,13 @@
     // "rgssVersion": 1,
 
 
+    // Continuously display average FPS in window title.
+    // This can always be toggled with F2 at runtime.
+    // (default: disabled)
+    //
+    // "displayFPS": false,
+
+
     // Continuously print average FPS to console.
     // This setting does not affect the window title
     // FPS display toggled via F2
@@ -70,18 +77,90 @@
     // "fixedAspectRatio": true,
 
 
-    // Apply linear interpolation when game screen
+    // Apply smooth interpolation when game screen
     // is upscaled
-    // (default: disabled)
+    // 0: Nearest-Neighbor
+    // 1: Bilinear
+    // 2: Bicubic
+    // 3: Lanczos3
+    // 4: xBRZ
+    // (default: 0)
     //
-    // "smoothScaling": false,
+    // "smoothScaling": 0,
 
 
-    // Apply Lanczos3 interpolation when game screen
-    // is upscaled (typically higher quality than linear)
+    // Apply smooth interpolation when game screen
+    // is downscaled (same values as smoothScaling)
+    // (default: 0)
+    //
+    // "smoothScalingDown": 0,
+
+
+    // Apply smooth interpolation when bitmaps
+    // are upscaled (same values as smoothScaling)
+    // (default: 0)
+    //
+    // "bitmapSmoothScaling": 0,
+
+
+    // Apply smooth interpolation when bitmaps
+    // are downscaled (same values as smoothScaling)
+    // (default: 0)
+    //
+    // "bitmapSmoothScalingDown": 0,
+
+
+    // Apply mipmap interpolation when game screen
+    // or bitmaps are downscaled (requires
+    // "smoothScalingDown": 1 or "bitmapSmoothScalingDown": 1)
+    // (default: false)
+    //
+    // "smoothScalingMipmaps": false,
+
+
+    // Sharpness when using Bicubic scaling.
+    // A good starting range is 0 to 100,
+    // but you may wish to go outside that range in either direction.
+    // (default: 100)
+    //
+    // "bicubicSharpness": 100,
+
+
+    // Scaling factor for xBRZ interpolation
+    // (set to at least the ratio of your window size
+    // to the game's native resolution)
+    // (default: 1.0)
+    //
+    // "xbrzScalingFactor": 4.0,
+
+
+    // Replace the game's Bitmap files with external high-res files
+    // provided in the "Hires" directory.
+    // (You'll also need to set the below Scaling Factors.)
     // (default: disabled)
     //
-    // "lanczos3Scaling": false,
+    // "enableHires": false,
+
+
+    // Scaling factor for textures (e.g. Bitmaps)
+    // (higher values will look better if you use high-res textures)
+    // (default: 1.0)
+    //
+    // "textureScalingFactor": 4.0,
+
+
+    // Scaling factor for screen framebuffer
+    // (higher values will look better if you use high-res textures)
+    // (default: 1.0)
+    //
+    // "framebufferScalingFactor": 4.0,
+
+
+    // Scaling factor for tileset atlas
+    // (higher values will look better if you use high-res textures)
+    // (default: 1.0)
+    //
+    // "atlasScalingFactor": 4.0,
 
 
     // Sync screen redraws to the monitor refresh rate
@@ -92,7 +171,7 @@
 
     // Specify the window width on startup. If set to 0,
     // it will default to the default resolution width
-    // specific to  the RGSS version (640 in RGSS1, 544
+    // specific to the RGSS version (640 in RGSS1, 544
     // in RGSS2 or higher).
     // (default: 0)
     //
@@ -143,22 +222,29 @@
     // A list of fonts to render without alpha blending.
     // (default: none)
     //
-    // "solidFonts": ["Arial", "Times New Roman"]
+    // "solidFonts": [
+    //     "Arial",
+    //     "Times New Roman",
+    // ],
 
 
-    // Prefer the use of Metal on macOS and vulkan on Linux.
+    // Prefer the use of Metal over OpenGL on macOS.
+    // This defaults to false under Intel machines,
+    // and true under ARM/Apple Silicon ones (which
+    // merely emulate OpenGL anyway)
     //
     // Try changing this if you have graphics problems.
-    // ANGLE may not initialize correctly on some Intel machines.
+    // Metal is far better, but ANGLE may not initialize correctly
+    // on some Intel machines.
     //
     // On Apple Silicon it's probably better to not touch it.
     // Emulated OpenGL is buggy, and it will also break things like
     // the Steam overlay.
-    // (default: opengl)
+    // (default: true if Apple Silicon, false if Intel)
     //
-    // "angleRenderer": "opengl",
-
-
+    // "preferMetalRenderer": true,
+    
+    
     // Work around buggy graphics drivers which don't
     // properly synchronize texture access, most
     // apparent when text doesn't show up or the map
@@ -172,7 +258,9 @@
     // capable of it. Some drivers carry buggy
     // implementations of this functionality, so
     // disabling it can be used as a workaround.
-    // Does nothing on macOS.
+    // Does nothing on macOS. Force-disabled when
+    // smoothScaling or smoothScalingDown isn't
+    // Nearest-Neighbor or Bilinear.
     // (default: disabled)
     //
     // "enableBlitting": false,
@@ -230,6 +318,12 @@
     //
     // "enableReset": true,
     
+    // Enable F1/keybinding menu
+    // (default: enabled)
+    //
+    // "enableSettings": true,
+
+
     // Allow symlinks for game assets to be followed
     // (default: disabled)
     //
@@ -267,9 +361,11 @@
     // execution starts
     // (default: none)
     //
-    // "preloadScript": ["scripts/preload/ruby18_wrap.rb",
-    //                   "scripts/preload/mkxp_wrap.rb",
-    //                   "scripts/preload/win32_wrap.rb"],
+    // "preloadScript": [
+    //     "scripts/preload/ruby_classic_wrap.rb",
+    //     "scripts/preload/mkxp_wrap.rb",
+    //     "scripts/preload/win32_wrap.rb",
+    // ],
 
 
     // Index all accesible assets via their lower case path
@@ -278,13 +374,27 @@
     //
     // "pathCache": true,
 
-    // Add 'rtp1', 'rtp2.zip' and 'game.rgssad' to the
-    // asset search path (multiple allowed)
+    // Add 'rtp1', 'rtp2.zip' and 'game.rgssad' to the asset search path
+    // (multiple allowed). You can use folders, RGSS archives, and any archive
+    // formats supported by PhysicsFS; see the compatibility list at:
+    // https://www.icculus.org/physfs/docs/html/
     // (default: none)
     //
-    // "RTP": ["/path/to/rtp1",
-    //         "/path/to/rtp2.zip",
-    //         "/path/to/game.rgssad"],
+    // "RTP": [
+    //     "/path/to/rtp1",
+    //     "/path/to/rtp2.zip",
+    //     "/path/to/game.rgssad",
+    // ],
+
+    // Similar to the RTP option, except items are loaded before
+    // the game archive and folder, for incremental game updates
+    // or modding.
+    // (default: none)
+    //
+    // "patches": [
+    //     "/path/to/patch1.zip",
+    //     "/path/to/patch2",
+    // ],
 
 
     // Use the script's name as filename in warnings and error messages
@@ -304,8 +414,10 @@
     // requested by RGSS.
     // (default: none)
     //
-    // "fontSub": ["Arial>Open Sans",
-    //             "Times New Roman>Liberation Serif"]
+    // "fontSub": [
+    //     "Arial>Open Sans",
+    //     "Times New Roman>Liberation Serif",
+    // ],
 
 
     // Because mkxp is usually distributed as a stand alone
@@ -316,8 +428,10 @@
     // link all required gems into libruby.so.
     // (default: none)
     //
-    // "rubyLoadpath": ["/usr/lib64/ruby/",
-    //                  "/usr/local/share/ruby/site_ruby"],
+    // "rubyLoadpath": [
+    //     "/usr/lib64/ruby/",
+    //     "/usr/local/share/ruby/site_ruby",
+    // ],
 
     // Determines whether MJIT is enabled. This probably
     // won't work unless you also have the header file
@@ -353,28 +467,34 @@
     //
     // "YJITEnable": false,
 
-    // Determines how the volume value of a sound affects how loud the sound is.
-    // The stock RPG Maker runtimes use a -35 dB scale for volume (option 0),
-    // but other runtimes might use a different scale.
-    // 0: -35 dB (a gain of -0.35 dB is applied to the sound for every percent
-    //            the volume is set below 100%)
-    // 1: linear (sound amplitude is multiplied by the volume)
-    // (default: 0)
+    // SoundFont to use for midi playback (via fluidsynth)
+    // (default: none)
     //
-    // "volumeScale": 0,
+    // "midiSoundFont": "Audio/BGM/GMGSx.sf2",
+
+
+    // Activate "chorus" effect for midi playback
+    //
+    // "midiChorus": false,
+
+
+    // Activate "reverb" effect for midi playback
+    //
+    // "midiReverb": false,
+
 
     // Number of OpenAL sources to allocate for SE playback.
     // If there are a lot of sounds playing at the same time
     // and audibly cutting each other off, try increasing
     // this number. Maximum: 64.
     //
-    // "SESourceCount": 6
+    // "SESourceCount": 6,
     
     // Number of streams to open for BGM tracks. If the game
     // needs multitrack audio, this should be set to as many
     // available tracks as the game needs. Maximum: 16.
     //
-    // "BGMTrackCount": 1
+    // "BGMTrackCount": 1,
 
 
     // The Windows game executable name minus ".exe". By default
@@ -387,7 +507,7 @@
     // "Game.rgssad", but specifying the executable name here
     // is a tiny bit less intrusive.
     //
-    // "execName": "Game"
+    // "execName": "Game",
     
     // You can define alternate terminology for the different
     // inputs recognized by RPG Maker. A, B, C, X, Y, Z, L, and R
@@ -398,7 +518,13 @@
     // "bindingNames": {
     //  "c": "Confirm",
     //  "b": "Cancel",
-    //  "x": ...
-    // }
+    //  "x": ...,
+    // },
+
+
+    // Dump tile atlas (for debugging purposes)
+    // (default: false)
+    //
+    // "dumpAtlas": false,
 
 }

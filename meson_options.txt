@@ -5,10 +5,13 @@ option('mri_library', type: 'string', value: '', description: 'Ruby manual link 
 option('force32', type: 'boolean', value: false, description: 'Force compiler to build a 32-bit executable')
 
 option('cxx11_experimental', type: 'boolean', value: false, description: 'Toggles between using ghc/filesystem or C++11 <experimental/filesystem>')
+option('shared_fluid', type: 'boolean', value: true, description: 'Dynamically link fluidsynth at build time')
 option('cjk_fallback_font', type: 'boolean', value: false, description: 'Use WenQuanYi Micro Hei as the fallback font')
 option('use_miniffi', type: 'boolean', value: true, description: 'Enable MiniFFI Ruby module (Win32API)')
 option('enable-https', type: 'boolean', value: true, description: 'Support HTTPS for get/post requests. Requires OpenSSL.')
 option('workdir_current', type: 'boolean', value: false, description: 'Keep current directory on startup')
+
+option('windows_resource_directory', type: 'string', value: 'windows', description: 'Path to Windows EXE resource directory')
 
 option('static_executable', type: 'boolean', value: true, description: 'Build a static executable (Windows-only)')
 option('appimagekit_path', type: 'string', value: '', description: 'Path to AppImageTool, used for building AppImages')
@@ -17,4 +20,4 @@ option('steamworks_path', type: 'string', value: '', description: 'Path to Steam
 option('steam_appid', type: 'string', value: '', description: 'Steam AppID. Set this to use SteamAPI_RestartAppIfNecessary')
 option('steamshim_debug', type: 'boolean', value: false, description: 'Whether to show Steamshim debug messages in the console')
 
-option('gfx_backend', type: 'combo', value: 'gles', choices: ['gl', 'gles'], description: 'Graphics rendering API to use.')
+option('gfx_backend', type: 'combo', value: 'gl', choices: ['gl', 'gles'], description: 'Graphics rendering API to use.')
