@@ -15,6 +15,7 @@ embedded_shaders = [
     'simpleAlphaUni.frag',
     'tilemap.frag',
     'flashMap.frag',
+    'bicubic.frag',
     'lanczos3.frag',
     'minimal.vert',
     'simple.vert',
@@ -25,9 +26,13 @@ embedded_shaders = [
     'blur.frag',
     'blurH.vert',
     'blurV.vert',
-    'simpleMatrix.vert',
-    'rb_simple.vert'
+    'simpleMatrix.vert'
 ]
+
+# xBRZ shader is GPLv3.
+if get_option('enable-https') == true
+    embedded_shaders += 'xbrz.frag'
+endif
 
 embedded_shaders_f = files(embedded_shaders)
 

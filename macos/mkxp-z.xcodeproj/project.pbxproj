@@ -7,30 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F7F7ED3293594EC00A17DC6 /* fps-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */; };
-		0F7F7ED4293594EC00A17DC6 /* fps-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */; };
-		0F7F7ED5293594EC00A17DC6 /* fps-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */; };
-		0F7F7ED6293594EC00A17DC6 /* fps-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */; };
-		0F7F7EDA2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */; };
-		0F7F7EDB2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */; };
-		0F7F7EDC2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */; };
-		0F7F7EDD2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */; };
-		0F7F7EE02935964600A17DC6 /* etc-internal-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */; };
-		0F7F7EE12935964600A17DC6 /* etc-internal-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */; };
-		0F7F7EE22935964600A17DC6 /* etc-internal-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */; };
-		0F7F7EE32935964600A17DC6 /* etc-internal-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */; };
-		0F7F7EE6293596FC00A17DC6 /* rb_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */; };
-		0F7F7EE7293596FC00A17DC6 /* rb_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */; };
-		0F7F7EE8293596FC00A17DC6 /* rb_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */; };
-		0F7F7EE9293596FC00A17DC6 /* rb_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */; };
-		0F7F7EF12935A56400A17DC6 /* shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */; };
-		0F7F7EF22935A56400A17DC6 /* shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */; };
-		0F7F7EF32935A56400A17DC6 /* shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */; };
-		0F7F7EF42935A56400A17DC6 /* shader-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */; };
-		0F7F7EFD2935A71200A17DC6 /* firstperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */; };
-		0F7F7EFE2935A71200A17DC6 /* firstperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */; };
-		0F7F7EFF2935A71200A17DC6 /* firstperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */; };
-		0F7F7F002935A71200A17DC6 /* firstperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */; };
+		02054AB6B60F49E3DF366CBD /* libjxl_dec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 672947DA8FC50921A7ED814A /* libjxl_dec.a */; };
+		21B74169A8853D63648093D5 /* xbrz.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = 88734C4B8039751FD0A59FA7 /* xbrz.frag */; };
+		319D403193F13F7989325EEA /* bicubic.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = CBEA4C45BE737EE0FF5A8A4C /* bicubic.frag */; };
+		3389416F9825F408A40824F3 /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8AA4AE49BB66C97EFAE3055 /* libbrotlicommon-static.a */; };
 		3B10EC5C2568D40500372D13 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE081562568D3A60006849F /* CoreGraphics.framework */; };
 		3B10EC5D2568D40C00372D13 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE081552568D3A60006849F /* Carbon.framework */; };
 		3B10EC5F2568D40C00372D13 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE081542568D3A60006849F /* Metal.framework */; };
@@ -73,7 +53,9 @@
 		3B10EDAC2568E95E00372D13 /* sharedstate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED512568E95D00372D13 /* sharedstate.cpp */; };
 		3B10EDAD2568E95E00372D13 /* filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED542568E95D00372D13 /* filesystem.cpp */; };
 		3B10EDAF2568E95E00372D13 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED562568E95D00372D13 /* main.cpp */; };
+		3B10EDB32568E95E00372D13 /* midisource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED5E2568E95D00372D13 /* midisource.cpp */; };
 		3B10EDB42568E95E00372D13 /* alstream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED5F2568E95D00372D13 /* alstream.cpp */; };
+		3B10EDB52568E95E00372D13 /* fluid-fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED602568E95D00372D13 /* fluid-fun.cpp */; };
 		3B10EDB62568E95E00372D13 /* sdlsoundsource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED632568E95D00372D13 /* sdlsoundsource.cpp */; };
 		3B10EDB72568E95E00372D13 /* audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED642568E95D00372D13 /* audio.cpp */; };
 		3B10EDB82568E95E00372D13 /* soundemitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED652568E95D00372D13 /* soundemitter.cpp */; };
@@ -182,10 +164,12 @@
 		3B1C23A425A19C600075EF5D /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED732568E95D00372D13 /* bitmap.cpp */; };
 		3B1C23A525A19C600075EF5D /* tilemapvx-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE12568E96A00372D13 /* tilemapvx-binding.cpp */; };
 		3B1C23A625A19C600075EF5D /* window-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDD62568E96A00372D13 /* window-binding.cpp */; };
+		3B1C23A725A19C600075EF5D /* midisource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED5E2568E95D00372D13 /* midisource.cpp */; };
 		3B1C23A825A19C600075EF5D /* graphics-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE92568E96A00372D13 /* graphics-binding.cpp */; };
 		3B1C23A925A19C600075EF5D /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDA12568E95E00372D13 /* plane.cpp */; };
 		3B1C23AA25A19C600075EF5D /* tilequad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED802568E95D00372D13 /* tilequad.cpp */; };
 		3B1C23AD25A19C600075EF5D /* tileatlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED912568E95E00372D13 /* tileatlas.cpp */; };
+		3B1C23AE25A19C600075EF5D /* fluid-fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED602568E95D00372D13 /* fluid-fun.cpp */; };
 		3B1C23AF25A19C600075EF5D /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED842568E95E00372D13 /* scene.cpp */; };
 		3B1C23B025A19C600075EF5D /* texpool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED812568E95D00372D13 /* texpool.cpp */; };
 		3B1C23B125A19C600075EF5D /* font-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDEC2568E96A00372D13 /* font-binding.cpp */; };
@@ -232,6 +216,7 @@
 		3B1C23E725A19C600075EF5D /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB23E22564546E00C4A63D /* icon.icns */; };
 		3B1C23E925A19C600075EF5D /* Assets.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BA08EA4256641ED00449CFF /* Assets.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3B1C23EB25A19C600075EF5D /* mkxp.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BD2B7282565B35D003DAD8A /* mkxp.json */; };
+		3B1C23ED25A19C600075EF5D /* libfluidsynth.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3B1C23EE25A19C600075EF5D /* libruby.3.1.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1C230A25A144A10075EF5D /* libruby.3.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3B1C23FD25A19FB40075EF5D /* steamshim_mac_helpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B1C23FC25A19FB40075EF5D /* steamshim_mac_helpers.mm */; };
 		3B1C241225A1A7120075EF5D /* libsteam_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1C241125A1A7120075EF5D /* libsteam_api.dylib */; };
@@ -243,8 +228,16 @@
 		3B251DAC26DA2EC200E5D09B /* 3.1.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3B251DA526DA2CFA00E5D09B /* 3.1.0 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3B312843259E7DC1002EAB43 /* miniffi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B312842259E7DC1002EAB43 /* miniffi.cpp */; };
 		3B312844259E7DC1002EAB43 /* miniffi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B312842259E7DC1002EAB43 /* miniffi.cpp */; };
+		3B3F7D1D25B19F6E00EA5F1C /* settingsmenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */; };
+		3B3F7D2025B19F6E00EA5F1C /* settingsmenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */; };
+		3B3F7D2625B19F7000EA5F1C /* settingsmenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */; };
+		3B3F7D2A25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */; };
+		3B3F7D2B25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */; };
+		3B3F7D2D25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */; };
 		3B480E9F25DCD174001686B4 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B480E9E25DCD16D001686B4 /* GameController.framework */; };
 		3B480EA125DCD176001686B4 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B480E9E25DCD16D001686B4 /* GameController.framework */; };
+		3B522DA9259BAA42003301C4 /* libfluidsynth.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3B522DAA259BAA4A003301C4 /* libfluidsynth.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3B522DC0259BD072003301C4 /* net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B522DBF259BD072003301C4 /* net.cpp */; };
 		3B522DC1259BD072003301C4 /* net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B522DBF259BD072003301C4 /* net.cpp */; };
 		3B522DCA259BFEE0003301C4 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B522DC8259BFEDF003301C4 /* libcrypto.a */; };
@@ -331,11 +324,13 @@
 		3BBE87B32705A73400A574AE /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED732568E95D00372D13 /* bitmap.cpp */; };
 		3BBE87B42705A73400A574AE /* tilemapvx-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE12568E96A00372D13 /* tilemapvx-binding.cpp */; };
 		3BBE87B52705A73400A574AE /* window-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDD62568E96A00372D13 /* window-binding.cpp */; };
+		3BBE87B62705A73400A574AE /* midisource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED5E2568E95D00372D13 /* midisource.cpp */; };
 		3BBE87B72705A73400A574AE /* libnsgif.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BA6944E263DAB53004194EB /* libnsgif.c */; };
 		3BBE87B82705A73400A574AE /* graphics-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE92568E96A00372D13 /* graphics-binding.cpp */; };
 		3BBE87B92705A73400A574AE /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDA12568E95E00372D13 /* plane.cpp */; };
 		3BBE87BA2705A73400A574AE /* tilequad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED802568E95D00372D13 /* tilequad.cpp */; };
 		3BBE87BB2705A73400A574AE /* tileatlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED912568E95E00372D13 /* tileatlas.cpp */; };
+		3BBE87BC2705A73400A574AE /* fluid-fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED602568E95D00372D13 /* fluid-fun.cpp */; };
 		3BBE87BD2705A73400A574AE /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED842568E95E00372D13 /* scene.cpp */; };
 		3BBE87BE2705A73400A574AE /* texpool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED812568E95D00372D13 /* texpool.cpp */; };
 		3BBE87BF2705A73400A574AE /* font-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDEC2568E96A00372D13 /* font-binding.cpp */; };
@@ -349,6 +344,7 @@
 		3BBE87C72705A73400A574AE /* graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED7B2568E95D00372D13 /* graphics.cpp */; };
 		3BBE87C82705A73400A574AE /* font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED772568E95D00372D13 /* font.cpp */; };
 		3BBE87C92705A73400A574AE /* steamshim_child.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B1C236925A19B960075EF5D /* steamshim_child.c */; };
+		3BBE87CA2705A73400A574AE /* SettingsMenuController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */; };
 		3BBE87CB2705A73400A574AE /* filesystemImplApple.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B5A840C2569BE7C00BAF2E5 /* filesystemImplApple.mm */; };
 		3BBE87CC2705A73400A574AE /* iniconfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B1BC0E0266F7C0C00794D22 /* iniconfig.cpp */; };
 		3BBE87CD2705A73400A574AE /* sharedstate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED512568E95D00372D13 /* sharedstate.cpp */; };
@@ -370,11 +366,13 @@
 		3BBE87EE2705A73400A574AE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BD2B46525651BF3003DAD8A /* libz.tbd */; };
 		3BBE87EF2705A73400A574AE /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BD2B46825651C12003DAD8A /* libiconv.tbd */; };
 		3BBE87F52705A73400A574AE /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB23E22564546E00C4A63D /* icon.icns */; };
+		3BBE87F62705A73400A574AE /* settingsmenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */; };
 		3BBE87F82705A73400A574AE /* shim in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3B1C235625A199370075EF5D /* shim */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBE87FA2705A73400A574AE /* Assets.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BA08EA4256641ED00449CFF /* Assets.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3BBE87FB2705A73400A574AE /* steam_appid.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3B1C243E25A1B8D20075EF5D /* steam_appid.txt */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBE87FD2705A73400A574AE /* mkxp.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BD2B7282565B35D003DAD8A /* mkxp.json */; };
 		3BBE87FF2705A73400A574AE /* 3.1.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3B251DA526DA2CFA00E5D09B /* 3.1.0 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3BBE88012705A73400A574AE /* libfluidsynth.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBE88022705A73400A574AE /* libEGL.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B5E1F0925A881FB0086FFDC /* libEGL.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBE88042705A73400A574AE /* libsteam_api.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1C241125A1A7120075EF5D /* libsteam_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBE88052705A73400A574AE /* libGLESv2.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B5E1F0A25A881FB0086FFDC /* libGLESv2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -438,10 +436,12 @@
 		3BC65DBD2584F3AD0063AFF1 /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED732568E95D00372D13 /* bitmap.cpp */; };
 		3BC65DBE2584F3AD0063AFF1 /* tilemapvx-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE12568E96A00372D13 /* tilemapvx-binding.cpp */; };
 		3BC65DBF2584F3AD0063AFF1 /* window-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDD62568E96A00372D13 /* window-binding.cpp */; };
+		3BC65DC02584F3AD0063AFF1 /* midisource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED5E2568E95D00372D13 /* midisource.cpp */; };
 		3BC65DC12584F3AD0063AFF1 /* graphics-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDE92568E96A00372D13 /* graphics-binding.cpp */; };
 		3BC65DC22584F3AD0063AFF1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDA12568E95E00372D13 /* plane.cpp */; };
 		3BC65DC32584F3AD0063AFF1 /* tilequad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED802568E95D00372D13 /* tilequad.cpp */; };
 		3BC65DC62584F3AD0063AFF1 /* tileatlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED912568E95E00372D13 /* tileatlas.cpp */; };
+		3BC65DC72584F3AD0063AFF1 /* fluid-fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED602568E95D00372D13 /* fluid-fun.cpp */; };
 		3BC65DC82584F3AD0063AFF1 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED842568E95E00372D13 /* scene.cpp */; };
 		3BC65DC92584F3AD0063AFF1 /* texpool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10ED812568E95D00372D13 /* texpool.cpp */; };
 		3BC65DCA2584F3AD0063AFF1 /* font-binding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B10EDEC2568E96A00372D13 /* font-binding.cpp */; };
@@ -502,9 +502,14 @@
 		3BE081462568A5C60006849F /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE081452568A5C60006849F /* libpng.a */; };
 		3BE081592568D3A60006849F /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE081502568D3A50006849F /* libbz2.tbd */; };
 		3BEA5D7225AC3CE300B6E359 /* libSDL2_image.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEA5D7125AC3CE300B6E359 /* libSDL2_image.a */; };
+		3BED4B7B9D57E5FB12D074A4 /* libjxl_dec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57354BACBAB03AB8617C398C /* libjxl_dec.a */; };
 		3BF5B4BD2685881D00A3B240 /* libSDL2_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BF5B4BC2685881C00A3B240 /* libSDL2_sound.a */; };
 		3BF5B4BF2685883B00A3B240 /* libSDL2_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BF5B4BE2685883B00A3B240 /* libSDL2_sound.a */; };
 		3BF5B4C02685883B00A3B240 /* libSDL2_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BF5B4BE2685883B00A3B240 /* libSDL2_sound.a */; };
+		3D094509A210271690AF48F7 /* xbrz.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = 88734C4B8039751FD0A59FA7 /* xbrz.frag */; };
+		3E2542219A9FD2B16781B1F5 /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B4BA780D4407F24279700 /* libbrotlidec-static.a */; };
+		3F7F41D98CEDE6F418AAB0D2 /* bicubic.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = CBEA4C45BE737EE0FF5A8A4C /* bicubic.frag */; };
+		74E9471FB1A876B0D9F2ABFF /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C254B088D8B18C7E957DE30 /* libbrotlidec-static.a */; };
 		96563582279A5ABD003D6A75 /* libtheora.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96563581279A5ABD003D6A75 /* libtheora.a */; };
 		96563583279A5ABD003D6A75 /* libtheora.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96563581279A5ABD003D6A75 /* libtheora.a */; };
 		96563585279A5ADA003D6A75 /* libtheora.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96563584279A5ADA003D6A75 /* libtheora.a */; };
@@ -522,10 +527,21 @@
 		96573E83279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
 		96573E84279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
 		96D8EDD128728DCE00A331EA /* gamecontrollerdb.txt in Resources */ = {isa = PBXBuildFile; fileRef = 96D8EDD028728DCA00A331EA /* gamecontrollerdb.txt */; };
-		FE5204162A08E27D0070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; };
-		FE5204172A08E2880070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; };
-		FE5204182A08E28F0070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; };
-		FE5204192A08E2950070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; };
+		9DBD4B93938DE5373F0B275B /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B4BA780D4407F24279700 /* libbrotlidec-static.a */; };
+		ADD04C5294116C82CB009D8A /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 293E462B94F6FA33CCB8B20C /* libbrotlicommon-static.a */; };
+		AE974950A93FC9A717E13D28 /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C254B088D8B18C7E957DE30 /* libbrotlidec-static.a */; };
+		B70841599CC887B2CF44195E /* libjxl_dec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 672947DA8FC50921A7ED814A /* libjxl_dec.a */; };
+		BB8B436FB4831131BD506069 /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 293E462B94F6FA33CCB8B20C /* libbrotlicommon-static.a */; };
+		C71F461FBD62A493F478410D /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8AA4AE49BB66C97EFAE3055 /* libbrotlicommon-static.a */; };
+		E6D84F678F91109969BD5191 /* libjxl_dec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57354BACBAB03AB8617C398C /* libjxl_dec.a */; };
+		E8E44E4292897395B7E25A92 /* libhwy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C3D4EBA94DA7A5C543A337E /* libhwy.a */; };
+		ECEC415E939B13D8C959F8D7 /* libhwy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C3D4EBA94DA7A5C543A337E /* libhwy.a */; };
+		EF05486C9854302CD39A0B80 /* libhwy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 667B4E3FBC5B03611D5C334E /* libhwy.a */; };
+		F7CA439883B85807B560AF67 /* libhwy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 667B4E3FBC5B03611D5C334E /* libhwy.a */; };
+		FE5204162A08E27D0070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FE5204172A08E2880070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FE5204182A08E28F0070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FE5204192A08E2950070038A /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5204152A08E27D0070038A /* CoreHaptics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FE52041B2A08E58D0070038A /* lanczos3.frag in Resources */ = {isa = PBXBuildFile; fileRef = FE52041A2A08E58D0070038A /* lanczos3.frag */; };
 		FE52041C2A08E62F0070038A /* lanczos3.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = FE52041A2A08E58D0070038A /* lanczos3.frag */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -632,6 +648,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3B1C23ED25A19C600075EF5D /* libfluidsynth.dylib in Embed Frameworks */,
 				3B5E1F1525A881FE0086FFDC /* libEGL.dylib in Embed Frameworks */,
 				3B1C23EE25A19C600075EF5D /* libruby.3.1.dylib in Embed Frameworks */,
 				3B1C242025A1A8660075EF5D /* libsteam_api.dylib in Embed Frameworks */,
@@ -687,6 +704,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				3B5E1F1F25A8820D0086FFDC /* libEGL.dylib in Embed Frameworks */,
+				3B522DA9259BAA42003301C4 /* libfluidsynth.dylib in Embed Frameworks */,
 				3B1C230F25A144C90075EF5D /* libruby.3.1.dylib in Embed Frameworks */,
 				3B5E1F2025A8820F0086FFDC /* libGLESv2.dylib in Embed Frameworks */,
 			);
@@ -700,6 +718,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				3B5E1F1D25A882090086FFDC /* libEGL.dylib in Embed Frameworks */,
+				3B522DAA259BAA4A003301C4 /* libfluidsynth.dylib in Embed Frameworks */,
 				3B1C230C25A144A40075EF5D /* libruby.3.1.dylib in Embed Frameworks */,
 				3B5E1F1E25A8820B0086FFDC /* libGLESv2.dylib in Embed Frameworks */,
 			);
@@ -748,6 +767,8 @@
 				3B10ECE82568E83D00372D13 /* tilemapvx.vert in CopyFiles */,
 				3B10ECE92568E83D00372D13 /* trans.frag in CopyFiles */,
 				3B10ECEA2568E83D00372D13 /* transSimple.frag in CopyFiles */,
+				3F7F41D98CEDE6F418AAB0D2 /* bicubic.frag in CopyFiles */,
+				3D094509A210271690AF48F7 /* xbrz.frag in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -758,6 +779,8 @@
 			dstSubfolderSpec = 7;
 			files = (
 				3B10ECF52568E86B00372D13 /* liberation.ttf in CopyFiles */,
+				319D403193F13F7989325EEA /* bicubic.frag in CopyFiles */,
+				21B74169A8853D63648093D5 /* xbrz.frag in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,6 +831,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3BBE88012705A73400A574AE /* libfluidsynth.dylib in Embed Frameworks */,
 				3BBE88022705A73400A574AE /* libEGL.dylib in Embed Frameworks */,
 				3BBE88042705A73400A574AE /* libsteam_api.dylib in Embed Frameworks */,
 				3BBE88052705A73400A574AE /* libGLESv2.dylib in Embed Frameworks */,
@@ -828,14 +852,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "fps-binding.cpp"; sourceTree = "<group>"; };
-		0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "compiled-shader-binding.cpp"; sourceTree = "<group>"; };
-		0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "etc-internal-binding.cpp"; sourceTree = "<group>"; };
-		0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rb_shader.cpp; sourceTree = "<group>"; };
-		0F7F7EEA2935970B00A17DC6 /* rb_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rb_shader.h; sourceTree = "<group>"; };
-		0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "shader-binding.cpp"; sourceTree = "<group>"; };
-		0F7F7EFB2935A70400A17DC6 /* firstperson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = firstperson.h; path = fps/firstperson.h; sourceTree = "<group>"; };
-		0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = firstperson.cpp; path = fps/firstperson.cpp; sourceTree = "<group>"; };
+		293E462B94F6FA33CCB8B20C /* libbrotlicommon-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlicommon-static.a"; path = "Dependencies/build-macosx-x86_64/lib/libbrotlicommon-static.a"; sourceTree = "<group>"; };
 		3B012198261544A0001E574A /* string-util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "string-util.h"; sourceTree = "<group>"; };
 		3B10EC832568E78400372D13 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../assets/icon.png; sourceTree = "<group>"; };
 		3B10EC842568E78400372D13 /* liberation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = liberation.ttf; path = ../assets/liberation.ttf; sourceTree = "<group>"; };
@@ -888,12 +905,16 @@
 		3B10ED4D2568E95D00372D13 /* etc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = etc.cpp; sourceTree = "<group>"; };
 		3B10ED4E2568E95D00372D13 /* etc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etc.h; sourceTree = "<group>"; };
 		3B10ED4F2568E95D00372D13 /* table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = table.h; sourceTree = "<group>"; };
+		3B10ED502568E95D00372D13 /* settingsmenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settingsmenu.h; sourceTree = "<group>"; };
 		3B10ED512568E95D00372D13 /* sharedstate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sharedstate.cpp; sourceTree = "<group>"; };
 		3B10ED532568E95D00372D13 /* filesystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filesystem.h; sourceTree = "<group>"; };
 		3B10ED542568E95D00372D13 /* filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filesystem.cpp; sourceTree = "<group>"; };
 		3B10ED562568E95D00372D13 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3B10ED5E2568E95D00372D13 /* midisource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = midisource.cpp; sourceTree = "<group>"; };
 		3B10ED5F2568E95D00372D13 /* alstream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = alstream.cpp; sourceTree = "<group>"; };
+		3B10ED602568E95D00372D13 /* fluid-fun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "fluid-fun.cpp"; sourceTree = "<group>"; };
 		3B10ED612568E95D00372D13 /* soundemitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundemitter.h; sourceTree = "<group>"; };
+		3B10ED622568E95D00372D13 /* fluid-fun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "fluid-fun.h"; sourceTree = "<group>"; };
 		3B10ED632568E95D00372D13 /* sdlsoundsource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sdlsoundsource.cpp; sourceTree = "<group>"; };
 		3B10ED642568E95D00372D13 /* audio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio.cpp; sourceTree = "<group>"; };
 		3B10ED652568E95D00372D13 /* soundemitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundemitter.cpp; sourceTree = "<group>"; };
@@ -903,7 +924,9 @@
 		3B10ED692568E95D00372D13 /* al-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "al-util.h"; sourceTree = "<group>"; };
 		3B10ED6A2568E95D00372D13 /* vorbissource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vorbissource.cpp; sourceTree = "<group>"; };
 		3B10ED6B2568E95D00372D13 /* aldatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aldatasource.h; sourceTree = "<group>"; };
+		3B10ED6C2568E95D00372D13 /* sharedmidistate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sharedmidistate.h; sourceTree = "<group>"; };
 		3B10ED6D2568E95D00372D13 /* alstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alstream.h; sourceTree = "<group>"; };
+		3B10ED6E2568E95D00372D13 /* settingsmenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = settingsmenu.cpp; sourceTree = "<group>"; };
 		3B10ED702568E95D00372D13 /* tilemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tilemap.h; sourceTree = "<group>"; };
 		3B10ED712568E95D00372D13 /* tilemap-common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "tilemap-common.h"; sourceTree = "<group>"; };
 		3B10ED722568E95D00372D13 /* windowvx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = windowvx.cpp; sourceTree = "<group>"; };
@@ -1009,13 +1032,18 @@
 		3B251DA526DA2CFA00E5D09B /* 3.1.0 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3.1.0; path = "Dependencies/build-macosx-x86_64/lib/ruby/3.1.0"; sourceTree = "<group>"; };
 		3B312841259E7DC1002EAB43 /* miniffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = miniffi.h; sourceTree = "<group>"; };
 		3B312842259E7DC1002EAB43 /* miniffi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = miniffi.cpp; sourceTree = "<group>"; };
+		3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = settingsmenu.xib; path = views/settingsmenu.xib; sourceTree = "<group>"; };
+		3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = SettingsMenuController.mm; path = views/SettingsMenuController.mm; sourceTree = "<group>"; };
+		3B3F7D3025B1A79F00EA5F1C /* SettingsMenuController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SettingsMenuController.h; path = views/SettingsMenuController.h; sourceTree = "<group>"; };
 		3B426F6B256B8AC0009EA00F /* fs_std_impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fs_std_impl.hpp; sourceTree = "<group>"; };
 		3B426F6C256B8AC0009EA00F /* fs_fwd.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fs_fwd.hpp; sourceTree = "<group>"; };
 		3B426F6D256B8AC0009EA00F /* fs_std.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fs_std.hpp; sourceTree = "<group>"; };
 		3B426F6E256B8AC0009EA00F /* filesystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = filesystem.hpp; sourceTree = "<group>"; };
 		3B426F6F256B8AC0009EA00F /* fs_impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fs_impl.hpp; sourceTree = "<group>"; };
 		3B426F70256B8AC0009EA00F /* fs_std_fwd.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fs_std_fwd.hpp; sourceTree = "<group>"; };
+		3B480E9325DCBDD6001686B4 /* sdl_codes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sdl_codes.h; path = views/sdl_codes.h; sourceTree = "<group>"; };
 		3B480E9E25DCD16D001686B4 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfluidsynth.dylib; path = Dependencies/Frameworks/libfluidsynth.dylib; sourceTree = "<group>"; };
 		3B522DB2259BC037003301C4 /* net.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		3B522DBD259BD046003301C4 /* httplib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = httplib.h; sourceTree = "<group>"; };
 		3B522DBF259BD072003301C4 /* net.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = net.cpp; sourceTree = "<group>"; };
@@ -1035,8 +1063,8 @@
 		3B5A845C256A465700BAF2E5 /* system.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
 		3B5A845D256A465700BAF2E5 /* systemImpl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = systemImpl.cpp; sourceTree = "<group>"; };
 		3B5A8463256A46B200BAF2E5 /* systemImplApple.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = systemImplApple.mm; sourceTree = "<group>"; };
-		3B5E1F0925A881FB0086FFDC /* libEGL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libEGL.dylib; path = ../vendor/ANGLE/libEGL.dylib; sourceTree = "<group>"; };
-		3B5E1F0A25A881FB0086FFDC /* libGLESv2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLESv2.dylib; path = ../vendor/ANGLE/libGLESv2.dylib; sourceTree = "<group>"; };
+		3B5E1F0925A881FB0086FFDC /* libEGL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libEGL.dylib; path = Dependencies/Frameworks/ANGLE/libEGL.dylib; sourceTree = "<group>"; };
+		3B5E1F0A25A881FB0086FFDC /* libGLESv2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLESv2.dylib; path = Dependencies/Frameworks/ANGLE/libGLESv2.dylib; sourceTree = "<group>"; };
 		3B609374268274CE0038E9D6 /* encoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = encoding.h; sourceTree = "<group>"; };
 		3BA08EA4256641ED00449CFF /* Assets.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Assets.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BA08EA6256641EE00449CFF /* Assets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Assets.plist; sourceTree = "<group>"; };
@@ -1098,6 +1126,13 @@
 		3BF5B4BC2685881C00A3B240 /* libSDL2_sound.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2_sound.a; path = "Dependencies/build-macosx-universal/lib/libSDL2_sound.a"; sourceTree = "<group>"; };
 		3BF5B4BE2685883B00A3B240 /* libSDL2_sound.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2_sound.a; path = "Dependencies/build-macosx-x86_64/lib/libSDL2_sound.a"; sourceTree = "<group>"; };
 		3BFABF53267787940024C7DD /* sigslot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sigslot; sourceTree = "<group>"; };
+		3C3D4EBA94DA7A5C543A337E /* libhwy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhwy.a; path = "Dependencies/build-macosx-x86_64/lib/libhwy.a"; sourceTree = "<group>"; };
+		3C4B4BA780D4407F24279700 /* libbrotlidec-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlidec-static.a"; path = "Dependencies/build-macosx-universal/lib/libbrotlidec-static.a"; sourceTree = "<group>"; };
+		57354BACBAB03AB8617C398C /* libjxl_dec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjxl_dec.a; path = "Dependencies/build-macosx-x86_64/lib/libjxl_dec.a"; sourceTree = "<group>"; };
+		5C254B088D8B18C7E957DE30 /* libbrotlidec-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlidec-static.a"; path = "Dependencies/build-macosx-x86_64/lib/libbrotlidec-static.a"; sourceTree = "<group>"; };
+		667B4E3FBC5B03611D5C334E /* libhwy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhwy.a; path = "Dependencies/build-macosx-universal/lib/libhwy.a"; sourceTree = "<group>"; };
+		672947DA8FC50921A7ED814A /* libjxl_dec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjxl_dec.a; path = "Dependencies/build-macosx-universal/lib/libjxl_dec.a"; sourceTree = "<group>"; };
+		88734C4B8039751FD0A59FA7 /* xbrz.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = xbrz.frag; path = ../shader/xbrz.frag; sourceTree = "<group>"; };
 		96563581279A5ABD003D6A75 /* libtheora.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheora.a; path = "Dependencies/build-macosx-x86_64/lib/libtheora.a"; sourceTree = "<group>"; };
 		96563584279A5ADA003D6A75 /* libtheora.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheora.a; path = "Dependencies/build-macosx-universal/lib/libtheora.a"; sourceTree = "<group>"; };
 		9656358E279A5B74003D6A75 /* theoraplay_cvtrgb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = theoraplay_cvtrgb.h; sourceTree = "<group>"; };
@@ -1107,6 +1142,8 @@
 		96573E7B27913B46002C3E77 /* TouchBar.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; name = TouchBar.h; path = views/TouchBar.h; sourceTree = "<group>"; };
 		96573E80279152DC002C3E77 /* TouchBar.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = TouchBar.xcassets; path = views/TouchBar.xcassets; sourceTree = "<group>"; };
 		96D8EDD028728DCA00A331EA /* gamecontrollerdb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = gamecontrollerdb.txt; path = ../assets/gamecontrollerdb.txt; sourceTree = "<group>"; };
+		A8AA4AE49BB66C97EFAE3055 /* libbrotlicommon-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlicommon-static.a"; path = "Dependencies/build-macosx-universal/lib/libbrotlicommon-static.a"; sourceTree = "<group>"; };
+		CBEA4C45BE737EE0FF5A8A4C /* bicubic.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = bicubic.frag; path = ../shader/bicubic.frag; sourceTree = "<group>"; };
 		FE5204152A08E27D0070038A /* CoreHaptics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreHaptics.framework; path = System/Library/Frameworks/CoreHaptics.framework; sourceTree = SDKROOT; };
 		FE52041A2A08E58D0070038A /* lanczos3.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = lanczos3.frag; path = ../shader/lanczos3.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1160,6 +1197,10 @@
 				3B1C23E325A19C600075EF5D /* libSDL2_image.a in Frameworks */,
 				3B1C23E425A19C600075EF5D /* libfreetype.a in Frameworks */,
 				3B1C23E525A19C600075EF5D /* libphysfs.a in Frameworks */,
+				3BED4B7B9D57E5FB12D074A4 /* libjxl_dec.a in Frameworks */,
+				74E9471FB1A876B0D9F2ABFF /* libbrotlidec-static.a in Frameworks */,
+				BB8B436FB4831131BD506069 /* libbrotlicommon-static.a in Frameworks */,
+				ECEC415E939B13D8C959F8D7 /* libhwy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,6 +1251,10 @@
 				3BBE881E2705AC4200A574AE /* libSDL2_image.a in Frameworks */,
 				3BBE881F2705AC4800A574AE /* libfreetype.a in Frameworks */,
 				3BBE88202705AC4C00A574AE /* libphysfs.a in Frameworks */,
+				02054AB6B60F49E3DF366CBD /* libjxl_dec.a in Frameworks */,
+				3E2542219A9FD2B16781B1F5 /* libbrotlidec-static.a in Frameworks */,
+				C71F461FBD62A493F478410D /* libbrotlicommon-static.a in Frameworks */,
+				EF05486C9854302CD39A0B80 /* libhwy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1254,6 +1299,10 @@
 				3BC65E202584F4290063AFF1 /* libpixman-1.a in Frameworks */,
 				3BC65E062584F3AD0063AFF1 /* libiconv.tbd in Frameworks */,
 				3BC65E262584F4290063AFF1 /* libpng16.a in Frameworks */,
+				B70841599CC887B2CF44195E /* libjxl_dec.a in Frameworks */,
+				9DBD4B93938DE5373F0B275B /* libbrotlidec-static.a in Frameworks */,
+				3389416F9825F408A40824F3 /* libbrotlicommon-static.a in Frameworks */,
+				F7CA439883B85807B560AF67 /* libhwy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1297,21 +1346,16 @@
 				3BE0810E256879FE0006849F /* libSDL2_image.a in Frameworks */,
 				3BE0811A256879FE0006849F /* libfreetype.a in Frameworks */,
 				3BE0811D256879FE0006849F /* libphysfs.a in Frameworks */,
+				E6D84F678F91109969BD5191 /* libjxl_dec.a in Frameworks */,
+				AE974950A93FC9A717E13D28 /* libbrotlidec-static.a in Frameworks */,
+				ADD04C5294116C82CB009D8A /* libbrotlicommon-static.a in Frameworks */,
+				E8E44E4292897395B7E25A92 /* libhwy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0F7F7EFA2935A6F500A17DC6 /* fps */ = {
-			isa = PBXGroup;
-			children = (
-				0F7F7EFC2935A71200A17DC6 /* firstperson.cpp */,
-				0F7F7EFB2935A70400A17DC6 /* firstperson.h */,
-			);
-			name = fps;
-			sourceTree = "<group>";
-		};
 		3B10EC6C2568E5EA00372D13 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -1352,6 +1396,8 @@
 				3B10EC982568E7B500372D13 /* sprite.vert */,
 				3B10ECA02568E7B600372D13 /* tilemap.vert */,
 				3B10EC962568E7B500372D13 /* tilemapvx.vert */,
+				CBEA4C45BE737EE0FF5A8A4C /* bicubic.frag */,
+				88734C4B8039751FD0A59FA7 /* xbrz.frag */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
@@ -1359,15 +1405,15 @@
 		3B10ED342568E95D00372D13 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				0F7F7EFA2935A6F500A17DC6 /* fps */,
-				3B522DB1259BBFE9003301C4 /* net */,
 				3B5A84052569B56F00BAF2E5 /* config.cpp */,
 				3B10ED352568E95D00372D13 /* eventthread.cpp */,
 				3B10ED562568E95D00372D13 /* main.cpp */,
+				3B10ED6E2568E95D00372D13 /* settingsmenu.cpp */,
 				3B10ED512568E95D00372D13 /* sharedstate.cpp */,
 				3B10EDA52568E95E00372D13 /* binding.h */,
 				3B10ED432568E95D00372D13 /* config.h */,
 				3B10ED492568E95D00372D13 /* eventthread.h */,
+				3B10ED502568E95D00372D13 /* settingsmenu.h */,
 				3B10EDA42568E95E00372D13 /* sharedstate.h */,
 				3B10ED5D2568E95D00372D13 /* audio */,
 				3B10ED362568E95D00372D13 /* crypto */,
@@ -1467,6 +1513,8 @@
 				3B10ED5F2568E95D00372D13 /* alstream.cpp */,
 				3B10ED642568E95D00372D13 /* audio.cpp */,
 				3B10ED662568E95D00372D13 /* audiostream.cpp */,
+				3B10ED602568E95D00372D13 /* fluid-fun.cpp */,
+				3B10ED5E2568E95D00372D13 /* midisource.cpp */,
 				3B10ED632568E95D00372D13 /* sdlsoundsource.cpp */,
 				3B10ED652568E95D00372D13 /* soundemitter.cpp */,
 				3B10ED6A2568E95D00372D13 /* vorbissource.cpp */,
@@ -1475,6 +1523,8 @@
 				3B10ED6D2568E95D00372D13 /* alstream.h */,
 				3B10ED672568E95D00372D13 /* audio.h */,
 				3B10ED682568E95D00372D13 /* audiostream.h */,
+				3B10ED622568E95D00372D13 /* fluid-fun.h */,
+				3B10ED6C2568E95D00372D13 /* sharedmidistate.h */,
 				3B10ED612568E95D00372D13 /* soundemitter.h */,
 			);
 			path = audio;
@@ -1483,13 +1533,6 @@
 		3B10ED6F2568E95D00372D13 /* display */ = {
 			isa = PBXGroup;
 			children = (
-				0F7F7EEA2935970B00A17DC6 /* rb_shader.h */,
-				0F7F7EE5293596FC00A17DC6 /* rb_shader.cpp */,
-				3BA6944D263DAB53004194EB /* libnsgif */,
-				3B10ED7E2568E95D00372D13 /* gl */,
-				3B10ED702568E95D00372D13 /* tilemap.h */,
-				3B10ED712568E95D00372D13 /* tilemap-common.h */,
-				3B10ED722568E95D00372D13 /* windowvx.cpp */,
 				3B10EDA22568E95E00372D13 /* autotiles.cpp */,
 				3B10ED9D2568E95E00372D13 /* autotilesvx.cpp */,
 				3B10ED732568E95D00372D13 /* bitmap.cpp */,
@@ -1557,14 +1600,6 @@
 		3B10EDD52568E96A00372D13 /* binding */ = {
 			isa = PBXGroup;
 			children = (
-				0F7F7EF02935A56400A17DC6 /* shader-binding.cpp */,
-				0F7F7EDF2935964600A17DC6 /* etc-internal-binding.cpp */,
-				0F7F7ED92935963000A17DC6 /* compiled-shader-binding.cpp */,
-				0F7F7ED2293594EB00A17DC6 /* fps-binding.cpp */,
-				3B10EDD62568E96A00372D13 /* window-binding.cpp */,
-				3B10EDD72568E96A00372D13 /* filesystem-binding.cpp */,
-				3B10EDD82568E96A00372D13 /* viewportelement-binding.h */,
-				3B10EDD92568E96A00372D13 /* cusl-binding.cpp */,
 				3B10EDDA2568E96A00372D13 /* audio-binding.cpp */,
 				3B10EDF02568E96A00372D13 /* binding-mri.cpp */,
 				3B10EDEF2568E96A00372D13 /* binding-util.cpp */,
@@ -1653,6 +1688,10 @@
 		3B3F7D1325B19C5A00EA5F1C /* MacOS */ = {
 			isa = PBXGroup;
 			children = (
+				3B480E9325DCBDD6001686B4 /* sdl_codes.h */,
+				3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */,
+				3B3F7D3025B1A79F00EA5F1C /* SettingsMenuController.h */,
+				3B3F7D2925B1A73A00EA5F1C /* SettingsMenuController.mm */,
 				96573E7B27913B46002C3E77 /* TouchBar.h */,
 				96573E7A27913B46002C3E77 /* TouchBar.mm */,
 				96573E80279152DC002C3E77 /* TouchBar.xcassets */,
@@ -1729,6 +1768,7 @@
 				3BC65D7D2584F3780063AFF1 /* libfreetype.a */,
 				3BF5B4BC2685881C00A3B240 /* libSDL2_sound.a */,
 				3BAEB1432673DBE700AC177B /* libuchardet.a */,
+				3B522DA1259BAA13003301C4 /* libfluidsynth.dylib */,
 				3B1C230D25A144BF0075EF5D /* libruby.3.1.dylib */,
 				96563584279A5ADA003D6A75 /* libtheora.a */,
 				3BC65D822584F3780063AFF1 /* libogg.a */,
@@ -1745,6 +1785,10 @@
 				3BC65D812584F3780063AFF1 /* libvorbisfile.a */,
 				3B522DC8259BFEDF003301C4 /* libcrypto.a */,
 				3B522DC9259BFEDF003301C4 /* libssl.a */,
+				672947DA8FC50921A7ED814A /* libjxl_dec.a */,
+				3C4B4BA780D4407F24279700 /* libbrotlidec-static.a */,
+				A8AA4AE49BB66C97EFAE3055 /* libbrotlicommon-static.a */,
+				667B4E3FBC5B03611D5C334E /* libhwy.a */,
 			);
 			name = Universal;
 			sourceTree = "<group>";
@@ -1868,6 +1912,10 @@
 				3BE080E7256879FC0006849F /* libvorbisfile.a */,
 				3B522DD5259BFF2D003301C4 /* libcrypto.a */,
 				3B522DD4259BFF2D003301C4 /* libssl.a */,
+				57354BACBAB03AB8617C398C /* libjxl_dec.a */,
+				5C254B088D8B18C7E957DE30 /* libbrotlidec-static.a */,
+				293E462B94F6FA33CCB8B20C /* libbrotlicommon-static.a */,
+				3C3D4EBA94DA7A5C543A337E /* libhwy.a */,
 			);
 			name = Intel;
 			sourceTree = "<group>";
@@ -1906,7 +1954,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3B1C23EF25A19C600075EF5D /* Build configuration list for PBXNativeTarget "Z-steam" */;
 			buildPhases = (
-				FE4F72FE2A179EE0004FED68 /* ShellScript */,
 				3B1C237025A19C600075EF5D /* Sources */,
 				3B1C23C225A19C600075EF5D /* Frameworks */,
 				3B1C23E625A19C600075EF5D /* Resources */,
@@ -1915,6 +1962,7 @@
 				3B1C23EA25A19C600075EF5D /* CopyFiles */,
 				3B251DAB26DA2EBB00E5D09B /* CopyFiles */,
 				3B1C23EC25A19C600075EF5D /* Embed Frameworks */,
+				FE4F72FE2A179EE0004FED68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1950,7 +1998,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3BBE88062705A73400A574AE /* Build configuration list for PBXNativeTarget "Z-steam-universal" */;
 			buildPhases = (
-				FE4F72FD2A179ED5004FED68 /* ShellScript */,
 				3BBE87852705A73400A574AE /* Sources */,
 				3BBE87CE2705A73400A574AE /* Frameworks */,
 				3BBE87F42705A73400A574AE /* Resources */,
@@ -1959,6 +2006,7 @@
 				3BBE87FC2705A73400A574AE /* CopyFiles */,
 				3BBE87FE2705A73400A574AE /* CopyFiles */,
 				3BBE88002705A73400A574AE /* Embed Frameworks */,
+				FE4F72FD2A179ED5004FED68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1975,7 +2023,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3BC65E122584F3AD0063AFF1 /* Build configuration list for PBXNativeTarget "Z-universal" */;
 			buildPhases = (
-				FE4F72FB2A179D9E004FED68 /* ShellScript */,
 				3BC65D8D2584F3AD0063AFF1 /* Sources */,
 				3BC65DDB2584F3AD0063AFF1 /* Frameworks */,
 				3BC65E0D2584F3AD0063AFF1 /* Resources */,
@@ -1983,6 +2030,7 @@
 				3BC65E0F2584F3AD0063AFF1 /* CopyFiles */,
 				3B251D9F26DA2C2A00E5D09B /* CopyFiles */,
 				3B522D79259BA0E3003301C4 /* Embed Frameworks */,
+				FE4F72FB2A179D9E004FED68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1998,7 +2046,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3BD2B7222565AEC0003DAD8A /* Build configuration list for PBXNativeTarget "Z-intel" */;
 			buildPhases = (
-				FE4F72FC2A179ECC004FED68 /* ShellScript */,
 				3BD2B64C2565AEC0003DAD8A /* Sources */,
 				3BD2B6E12565AEC0003DAD8A /* Frameworks */,
 				3BD2B6F82565AEC0003DAD8A /* Resources */,
@@ -2006,6 +2053,7 @@
 				3B5A843B2569F95A00BAF2E5 /* CopyFiles */,
 				3B251DA726DA2E8A00E5D09B /* CopyFiles */,
 				3B522D7C259BA0E8003301C4 /* Embed Frameworks */,
+				FE4F72FC2A179ECC004FED68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2033,7 +2081,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3BDB22EF25644FBF00C4A63D /* Build configuration list for PBXProject "mkxp-z" */;
+			buildConfigurationList = 3BDB22EF25644FBF00C4A63D /* Build configuration list for PBXProject "Assets" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -2062,6 +2110,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B1C23E725A19C600075EF5D /* icon.icns in Resources */,
+				3B3F7D2625B19F7000EA5F1C /* settingsmenu.xib in Resources */,
 				96573E84279152DC002C3E77 /* TouchBar.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2081,6 +2130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BBE87F52705A73400A574AE /* icon.icns in Resources */,
+				3BBE87F62705A73400A574AE /* settingsmenu.xib in Resources */,
 				96573E83279152DC002C3E77 /* TouchBar.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2090,6 +2140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC65E0E2584F3AD0063AFF1 /* icon.icns in Resources */,
+				3B3F7D1D25B19F6E00EA5F1C /* settingsmenu.xib in Resources */,
 				96573E81279152DC002C3E77 /* TouchBar.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2099,6 +2150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BD2B6F92565AEC0003DAD8A /* icon.icns in Resources */,
+				3B3F7D2025B19F6E00EA5F1C /* settingsmenu.xib in Resources */,
 				96573E82279152DC002C3E77 /* TouchBar.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2114,6 +2166,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}",
 			);
 			outputFileListPaths = (
 			);
@@ -2121,7 +2174,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n";
 		};
 		FE4F72FC2A179ECC004FED68 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2131,6 +2184,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}",
 			);
 			outputFileListPaths = (
 			);
@@ -2138,7 +2192,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n";
 		};
 		FE4F72FD2A179ED5004FED68 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2148,6 +2202,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}",
 			);
 			outputFileListPaths = (
 			);
@@ -2155,7 +2210,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n";
 		};
 		FE4F72FE2A179EE0004FED68 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2165,6 +2220,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}",
 			);
 			outputFileListPaths = (
 			);
@@ -2172,7 +2228,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2202,27 +2258,21 @@
 				3B1C237B25A19C600075EF5D /* net.cpp in Sources */,
 				3B1C237C25A19C600075EF5D /* table-binding.cpp in Sources */,
 				3B1C237D25A19C600075EF5D /* config.cpp in Sources */,
-				0F7F7EF42935A56400A17DC6 /* shader-binding.cpp in Sources */,
 				3B1C237E25A19C600075EF5D /* bitmap-binding.cpp in Sources */,
 				3B1C237F25A19C600075EF5D /* vorbissource.cpp in Sources */,
-				0F7F7F002935A71200A17DC6 /* firstperson.cpp in Sources */,
 				3B1C238125A19C600075EF5D /* filesystem-binding.cpp in Sources */,
 				3B1C238325A19C600075EF5D /* glstate.cpp in Sources */,
-				0F7F7ED6293594EC00A17DC6 /* fps-binding.cpp in Sources */,
 				3B1C238425A19C600075EF5D /* gl-fun.cpp in Sources */,
 				3B1C238525A19C600075EF5D /* sprite-binding.cpp in Sources */,
 				3B1C238625A19C600075EF5D /* sprite.cpp in Sources */,
 				3B1C238725A19C600075EF5D /* cusl-binding.cpp in Sources */,
-				0F7F7EE32935964600A17DC6 /* etc-internal-binding.cpp in Sources */,
 				3B1C238825A19C600075EF5D /* sdlsoundsource.cpp in Sources */,
 				3B1C238925A19C600075EF5D /* viewport-binding.cpp in Sources */,
 				3B1C238A25A19C600075EF5D /* windowvx-binding.cpp in Sources */,
 				3B1C238B25A19C600075EF5D /* windowvx.cpp in Sources */,
-				0F7F7EDD2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */,
 				3B1C238C25A19C600075EF5D /* LUrlParser.cpp in Sources */,
 				3B1C238D25A19C600075EF5D /* module_rpg.cpp in Sources */,
 				9656359E279A5B74003D6A75 /* theoraplay.c in Sources */,
-				0F7F7EE9293596FC00A17DC6 /* rb_shader.cpp in Sources */,
 				3B1C238E25A19C600075EF5D /* miniffi.cpp in Sources */,
 				3B1C238F25A19C600075EF5D /* autotiles.cpp in Sources */,
 				3B1C239025A19C600075EF5D /* audiostream.cpp in Sources */,
@@ -2246,11 +2296,13 @@
 				3B1C23A425A19C600075EF5D /* bitmap.cpp in Sources */,
 				3B1C23A525A19C600075EF5D /* tilemapvx-binding.cpp in Sources */,
 				3B1C23A625A19C600075EF5D /* window-binding.cpp in Sources */,
+				3B1C23A725A19C600075EF5D /* midisource.cpp in Sources */,
 				3BA69457263DAB53004194EB /* libnsgif.c in Sources */,
 				3B1C23A825A19C600075EF5D /* graphics-binding.cpp in Sources */,
 				3B1C23A925A19C600075EF5D /* plane.cpp in Sources */,
 				3B1C23AA25A19C600075EF5D /* tilequad.cpp in Sources */,
 				3B1C23AD25A19C600075EF5D /* tileatlas.cpp in Sources */,
+				3B1C23AE25A19C600075EF5D /* fluid-fun.cpp in Sources */,
 				3B1C23AF25A19C600075EF5D /* scene.cpp in Sources */,
 				3B1C23B025A19C600075EF5D /* texpool.cpp in Sources */,
 				3B1C23B125A19C600075EF5D /* font-binding.cpp in Sources */,
@@ -2264,6 +2316,7 @@
 				3B1C23BB25A19C600075EF5D /* graphics.cpp in Sources */,
 				3B1C23BC25A19C600075EF5D /* font.cpp in Sources */,
 				3B1C242B25A1AA1F0075EF5D /* steamshim_child.c in Sources */,
+				3B3F7D2D25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */,
 				3B1C23BF25A19C600075EF5D /* filesystemImplApple.mm in Sources */,
 				3B1BC0E4266F7C2800794D22 /* iniconfig.cpp in Sources */,
 				3B1C23C125A19C600075EF5D /* sharedstate.cpp in Sources */,
@@ -2293,27 +2346,21 @@
 				3BBE878F2705A73400A574AE /* net.cpp in Sources */,
 				3BBE87902705A73400A574AE /* table-binding.cpp in Sources */,
 				3BBE87912705A73400A574AE /* config.cpp in Sources */,
-				0F7F7EF32935A56400A17DC6 /* shader-binding.cpp in Sources */,
 				3BBE87922705A73400A574AE /* bitmap-binding.cpp in Sources */,
 				3BBE87932705A73400A574AE /* vorbissource.cpp in Sources */,
-				0F7F7EFF2935A71200A17DC6 /* firstperson.cpp in Sources */,
 				3BBE87942705A73400A574AE /* filesystem-binding.cpp in Sources */,
 				3BBE87952705A73400A574AE /* glstate.cpp in Sources */,
-				0F7F7ED5293594EC00A17DC6 /* fps-binding.cpp in Sources */,
 				3BBE87962705A73400A574AE /* gl-fun.cpp in Sources */,
 				3BBE87972705A73400A574AE /* sprite-binding.cpp in Sources */,
 				3BBE87982705A73400A574AE /* sprite.cpp in Sources */,
 				3BBE87992705A73400A574AE /* cusl-binding.cpp in Sources */,
-				0F7F7EE22935964600A17DC6 /* etc-internal-binding.cpp in Sources */,
 				3BBE879A2705A73400A574AE /* sdlsoundsource.cpp in Sources */,
 				3BBE879B2705A73400A574AE /* viewport-binding.cpp in Sources */,
 				3BBE879C2705A73400A574AE /* windowvx-binding.cpp in Sources */,
 				3BBE879D2705A73400A574AE /* windowvx.cpp in Sources */,
-				0F7F7EDC2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */,
 				3BBE879E2705A73400A574AE /* LUrlParser.cpp in Sources */,
 				3BBE879F2705A73400A574AE /* module_rpg.cpp in Sources */,
 				9656359D279A5B74003D6A75 /* theoraplay.c in Sources */,
-				0F7F7EE8293596FC00A17DC6 /* rb_shader.cpp in Sources */,
 				3BBE87A02705A73400A574AE /* miniffi.cpp in Sources */,
 				3BBE87A12705A73400A574AE /* autotiles.cpp in Sources */,
 				3BBE87A22705A73400A574AE /* audiostream.cpp in Sources */,
@@ -2337,11 +2384,13 @@
 				3BBE87B32705A73400A574AE /* bitmap.cpp in Sources */,
 				3BBE87B42705A73400A574AE /* tilemapvx-binding.cpp in Sources */,
 				3BBE87B52705A73400A574AE /* window-binding.cpp in Sources */,
+				3BBE87B62705A73400A574AE /* midisource.cpp in Sources */,
 				3BBE87B72705A73400A574AE /* libnsgif.c in Sources */,
 				3BBE87B82705A73400A574AE /* graphics-binding.cpp in Sources */,
 				3BBE87B92705A73400A574AE /* plane.cpp in Sources */,
 				3BBE87BA2705A73400A574AE /* tilequad.cpp in Sources */,
 				3BBE87BB2705A73400A574AE /* tileatlas.cpp in Sources */,
+				3BBE87BC2705A73400A574AE /* fluid-fun.cpp in Sources */,
 				3BBE87BD2705A73400A574AE /* scene.cpp in Sources */,
 				3BBE87BE2705A73400A574AE /* texpool.cpp in Sources */,
 				3BBE87BF2705A73400A574AE /* font-binding.cpp in Sources */,
@@ -2355,6 +2404,7 @@
 				3BBE87C72705A73400A574AE /* graphics.cpp in Sources */,
 				3BBE87C82705A73400A574AE /* font.cpp in Sources */,
 				3BBE87C92705A73400A574AE /* steamshim_child.c in Sources */,
+				3BBE87CA2705A73400A574AE /* SettingsMenuController.mm in Sources */,
 				3BBE87CB2705A73400A574AE /* filesystemImplApple.mm in Sources */,
 				3BBE87CC2705A73400A574AE /* iniconfig.cpp in Sources */,
 				3BBE87CD2705A73400A574AE /* sharedstate.cpp in Sources */,
@@ -2376,8 +2426,6 @@
 				3BC65D952584F3AD0063AFF1 /* alstream.cpp in Sources */,
 				3BC65D962584F3AD0063AFF1 /* table.cpp in Sources */,
 				3B522DC0259BD072003301C4 /* net.cpp in Sources */,
-				0F7F7EE02935964600A17DC6 /* etc-internal-binding.cpp in Sources */,
-				0F7F7ED3293594EC00A17DC6 /* fps-binding.cpp in Sources */,
 				3BC65D972584F3AD0063AFF1 /* table-binding.cpp in Sources */,
 				3BC65D982584F3AD0063AFF1 /* config.cpp in Sources */,
 				3BC65D992584F3AD0063AFF1 /* bitmap-binding.cpp in Sources */,
@@ -2390,10 +2438,8 @@
 				3BC65DA12584F3AD0063AFF1 /* sprite.cpp in Sources */,
 				3BC65DA22584F3AD0063AFF1 /* cusl-binding.cpp in Sources */,
 				3BC65DA32584F3AD0063AFF1 /* sdlsoundsource.cpp in Sources */,
-				0F7F7EE6293596FC00A17DC6 /* rb_shader.cpp in Sources */,
 				3BC65DA42584F3AD0063AFF1 /* viewport-binding.cpp in Sources */,
 				3BC65DA52584F3AD0063AFF1 /* windowvx-binding.cpp in Sources */,
-				0F7F7EFD2935A71200A17DC6 /* firstperson.cpp in Sources */,
 				3BC65DA62584F3AD0063AFF1 /* windowvx.cpp in Sources */,
 				3B522DE5259C2039003301C4 /* LUrlParser.cpp in Sources */,
 				3BC65DA72584F3AD0063AFF1 /* module_rpg.cpp in Sources */,
@@ -2411,7 +2457,6 @@
 				3BC65DB32584F3AD0063AFF1 /* input-binding.cpp in Sources */,
 				3BC65DB42584F3AD0063AFF1 /* keybindings.cpp in Sources */,
 				3BC65DB52584F3AD0063AFF1 /* filesystem.cpp in Sources */,
-				0F7F7EDA2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */,
 				3BC65DB62584F3AD0063AFF1 /* binding-mri.cpp in Sources */,
 				3BC65DB82584F3AD0063AFF1 /* eventthread.cpp in Sources */,
 				3BC65DB92584F3AD0063AFF1 /* viewport.cpp in Sources */,
@@ -2420,11 +2465,14 @@
 				3BC65DBD2584F3AD0063AFF1 /* bitmap.cpp in Sources */,
 				3BC65DBE2584F3AD0063AFF1 /* tilemapvx-binding.cpp in Sources */,
 				3BC65DBF2584F3AD0063AFF1 /* window-binding.cpp in Sources */,
+				3BC65DC02584F3AD0063AFF1 /* midisource.cpp in Sources */,
+				3B3F7D2A25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */,
 				3BC65DC12584F3AD0063AFF1 /* graphics-binding.cpp in Sources */,
 				3BC65DC22584F3AD0063AFF1 /* plane.cpp in Sources */,
 				3BC65DC32584F3AD0063AFF1 /* tilequad.cpp in Sources */,
 				9656359B279A5B74003D6A75 /* theoraplay.c in Sources */,
 				3BC65DC62584F3AD0063AFF1 /* tileatlas.cpp in Sources */,
+				3BC65DC72584F3AD0063AFF1 /* fluid-fun.cpp in Sources */,
 				3BC65DC82584F3AD0063AFF1 /* scene.cpp in Sources */,
 				3BC65DC92584F3AD0063AFF1 /* texpool.cpp in Sources */,
 				3BC65DCA2584F3AD0063AFF1 /* font-binding.cpp in Sources */,
@@ -2439,7 +2487,6 @@
 				3BC65DD52584F3AD0063AFF1 /* font.cpp in Sources */,
 				3B1BC0E1266F7C2600794D22 /* iniconfig.cpp in Sources */,
 				3BC65DD82584F3AD0063AFF1 /* filesystemImplApple.mm in Sources */,
-				0F7F7EF12935A56400A17DC6 /* shader-binding.cpp in Sources */,
 				3BC65DDA2584F3AD0063AFF1 /* sharedstate.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2459,8 +2506,6 @@
 				3B10EDB42568E95E00372D13 /* alstream.cpp in Sources */,
 				3B10EDAA2568E95E00372D13 /* table.cpp in Sources */,
 				3B522DC1259BD072003301C4 /* net.cpp in Sources */,
-				0F7F7EE12935964600A17DC6 /* etc-internal-binding.cpp in Sources */,
-				0F7F7ED4293594EC00A17DC6 /* fps-binding.cpp in Sources */,
 				3B10EE002568E96A00372D13 /* table-binding.cpp in Sources */,
 				3B5A84062569B56F00BAF2E5 /* config.cpp in Sources */,
 				3B10EDFF2568E96A00372D13 /* bitmap-binding.cpp in Sources */,
@@ -2473,10 +2518,8 @@
 				3B10EDBF2568E95E00372D13 /* sprite.cpp in Sources */,
 				3B10EDF72568E96A00372D13 /* cusl-binding.cpp in Sources */,
 				3B10EDB62568E95E00372D13 /* sdlsoundsource.cpp in Sources */,
-				0F7F7EE7293596FC00A17DC6 /* rb_shader.cpp in Sources */,
 				3B10EE0C2568E96A00372D13 /* viewport-binding.cpp in Sources */,
 				3B10EDFA2568E96A00372D13 /* windowvx-binding.cpp in Sources */,
-				0F7F7EFE2935A71200A17DC6 /* firstperson.cpp in Sources */,
 				3B10EDBC2568E95E00372D13 /* windowvx.cpp in Sources */,
 				3B522DE6259C2039003301C4 /* LUrlParser.cpp in Sources */,
 				3B10EE0B2568E96A00372D13 /* module_rpg.cpp in Sources */,
@@ -2494,7 +2537,6 @@
 				3B10EDF92568E96A00372D13 /* input-binding.cpp in Sources */,
 				3B10EDA92568E95E00372D13 /* keybindings.cpp in Sources */,
 				3B10EDAD2568E95E00372D13 /* filesystem.cpp in Sources */,
-				0F7F7EDB2935963000A17DC6 /* compiled-shader-binding.cpp in Sources */,
 				3B10EE092568E96A00372D13 /* binding-mri.cpp in Sources */,
 				3B10EDA62568E95E00372D13 /* eventthread.cpp in Sources */,
 				3B10EDD02568E95E00372D13 /* viewport.cpp in Sources */,
@@ -2503,11 +2545,14 @@
 				3B10EDBD2568E95E00372D13 /* bitmap.cpp in Sources */,
 				3B10EDFC2568E96A00372D13 /* tilemapvx-binding.cpp in Sources */,
 				3B10EDF52568E96A00372D13 /* window-binding.cpp in Sources */,
+				3B10EDB32568E95E00372D13 /* midisource.cpp in Sources */,
+				3B3F7D2B25B1A73A00EA5F1C /* SettingsMenuController.mm in Sources */,
 				3B10EE042568E96A00372D13 /* graphics-binding.cpp in Sources */,
 				3B10EDD12568E95E00372D13 /* plane.cpp in Sources */,
 				3B10EDC32568E95E00372D13 /* tilequad.cpp in Sources */,
 				9656359C279A5B74003D6A75 /* theoraplay.c in Sources */,
 				3B10EDCB2568E95E00372D13 /* tileatlas.cpp in Sources */,
+				3B10EDB52568E95E00372D13 /* fluid-fun.cpp in Sources */,
 				3B10EDC62568E95E00372D13 /* scene.cpp in Sources */,
 				3B10EDC42568E95E00372D13 /* texpool.cpp in Sources */,
 				3B10EE062568E96A00372D13 /* font-binding.cpp in Sources */,
@@ -2522,7 +2567,6 @@
 				3B10EDC02568E95E00372D13 /* font.cpp in Sources */,
 				3B1BC0E2266F7C2700794D22 /* iniconfig.cpp in Sources */,
 				3B5A840D2569BE7C00BAF2E5 /* filesystemImplApple.mm in Sources */,
-				0F7F7EF22935A56400A17DC6 /* shader-binding.cpp in Sources */,
 				3B10EDAC2568E95E00372D13 /* sharedstate.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2758,7 +2802,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
 				MARKETING_VERSION = 2.4.2;
@@ -2831,7 +2875,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
 				MARKETING_VERSION = 2.4.2;
@@ -3046,7 +3090,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3054,7 +3098,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-universal/lib",
 				);
@@ -3133,7 +3177,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3141,7 +3185,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-universal/lib",
 				);
@@ -3219,7 +3263,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3227,7 +3271,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-universal/lib",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
@@ -3300,7 +3344,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3308,7 +3352,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-universal/lib",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
@@ -3378,7 +3422,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
 				MARKETING_VERSION = 2.4.2;
@@ -3445,7 +3489,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 					"$(PROJECT_DIR)/Dependencies/build-macosx-x86_64/lib",
 				);
 				MARKETING_VERSION = 2.4.2;
@@ -3511,7 +3555,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
@@ -3581,7 +3625,7 @@
 					"$(DEPENDENCY_SEARCH_PATH)/include/AL",
 					"$(DEPENDENCY_SEARCH_PATH)/include/openssl",
 					"$(DEPENDENCY_SEARCH_PATH)/include/uchardet",
-					"../vendor/ANGLE",
+					"$(PROJECT_DIR)/Dependencies/Frameworks/ANGLE",
 				);
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
@@ -3658,7 +3702,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3BDB22EF25644FBF00C4A63D /* Build configuration list for PBXProject "mkxp-z" */ = {
+		3BDB22EF25644FBF00C4A63D /* Build configuration list for PBXProject "Assets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3BDB22F025644FBF00C4A63D /* Debug */,
