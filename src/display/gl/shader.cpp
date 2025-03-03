@@ -20,6 +20,8 @@
 */
 
 #include "shader.h"
+#include "config.h"
+#include "graphics.h"
 #include "sharedstate.h"
 #include "glstate.h"
 #include "exception.h"
@@ -44,7 +46,11 @@
 #include "simpleAlphaUni.frag.xxd"
 #include "tilemap.frag.xxd"
 #include "flashMap.frag.xxd"
+#include "bicubic.frag.xxd"
 #include "lanczos3.frag.xxd"
+#ifdef MKXPZ_SSL
+#include "xbrz.frag.xxd"
+#endif
 #include "minimal.vert.xxd"
 #include "simple.vert.xxd"
 #include "simpleColor.vert.xxd"
@@ -287,15 +293,25 @@ void ShaderBase::init()
 {
 	GET_U(texSizeInv);
 	GET_U(translation);
-	GET_U(spriteMat);
 
 	projMat.u_mat = gl.GetUniformLocation(program, "projMat");
 }
 
 void ShaderBase::applyViewportProj()
 {
+	// High-res: scale the matrix if we're rendering to the PingPong framebuffer.
 	const IntRect &vp = glState.viewport.get();
-	projMat.set(Vec2i(vp.w, vp.h));
+	if (shState->config().enableHires && shState->graphics().isPingPongFramebufferActive() && framebufferScalingAllowed()) {
+		projMat.set(Vec2i(shState->graphics().width(), shState->graphics().height()));
+	}
+	else {
+		projMat.set(Vec2i(vp.w, vp.h));
+	}
+}
+
+bool ShaderBase::framebufferScalingAllowed()
+{
+	return true;
 }
 
 void ShaderBase::setTexSize(const Vec2i &value)
@@ -306,11 +322,6 @@ void ShaderBase::setTexSize(const Vec2i &value)
 void ShaderBase::setTranslation(const Vec2i &value)
 {
 	gl.Uniform2f(u_translation, value.x, value.y);
-}
-
-void ShaderBase::setSpriteMat(const float value[16])
-{
-	gl.UniformMatrix4fv(u_spriteMat, 1, GL_FALSE, value);
 }
 
 
@@ -365,8 +376,64 @@ SimpleSpriteShader::SimpleSpriteShader()
 	INIT_SHADER(sprite, simple, SimpleSpriteShader);
 
 	ShaderBase::init();
+
+	GET_U(spriteMat);
 }
 
+void SimpleSpriteShader::setSpriteMat(const float value[16])
+{
+	gl.UniformMatrix4fv(u_spriteMat, 1, GL_FALSE, value);
+}
+
+BicubicSpriteShader::BicubicSpriteShader()
+{
+	INIT_SHADER(sprite, bicubic, BicubicSpriteShader);
+
+	ShaderBase::init();
+
+	GET_U(spriteMat);
+	GET_U(sourceSize);
+	GET_U(bc);
+}
+
+void BicubicSpriteShader::setSharpness(int sharpness)
+{
+	gl.Uniform2f(u_bc, 1.f - sharpness * 0.01f, sharpness * 0.005f);
+}
+
+Lanczos3SpriteShader::Lanczos3SpriteShader()
+{
+	INIT_SHADER(sprite, lanczos3, Lanczos3SpriteShader);
+
+	ShaderBase::init();
+
+	GET_U(spriteMat);
+	GET_U(sourceSize);
+}
+
+void Lanczos3SpriteShader::setTexSize(const Vec2i &value)
+{
+	ShaderBase::setTexSize(value);
+	gl.Uniform2f(u_sourceSize, (float)value.x, (float)value.y);
+}
+
+#ifdef MKXPZ_SSL
+XbrzSpriteShader::XbrzSpriteShader()
+{
+	INIT_SHADER(sprite, xbrz, XbrzSpriteShader);
+
+	ShaderBase::init();
+
+	GET_U(spriteMat);
+	GET_U(sourceSize);
+	GET_U(targetScale);
+}
+
+void XbrzSpriteShader::setTargetScale(const Vec2 &value)
+{
+	gl.Uniform2f(u_targetScale, value.x, value.y);
+}
+#endif
 
 AlphaSpriteShader::AlphaSpriteShader()
 {
@@ -376,6 +443,11 @@ AlphaSpriteShader::AlphaSpriteShader()
 
 	GET_U(spriteMat);
 	GET_U(alpha);
+}
+
+void AlphaSpriteShader::setSpriteMat(const float value[16])
+{
+	gl.UniformMatrix4fv(u_spriteMat, 1, GL_FALSE, value);
 }
 
 void AlphaSpriteShader::setAlpha(float value)
@@ -471,6 +543,11 @@ SpriteShader::SpriteShader()
     GET_U(patternScroll);
     GET_U(patternZoom);
     GET_U(invert);
+}
+
+void SpriteShader::setSpriteMat(const float value[16])
+{
+	gl.UniformMatrix4fv(u_spriteMat, 1, GL_FALSE, value);
 }
 
 void SpriteShader::setTone(const Vec4 &tone)
@@ -580,6 +657,13 @@ GrayShader::GrayShader()
 	ShaderBase::init();
 
 	GET_U(gray);
+}
+
+bool GrayShader::framebufferScalingAllowed()
+{
+	// This shader is used with input textures that have already had a
+	// framebuffer scale applied. So we don't want to double-apply it.
+	return false;
 }
 
 void GrayShader::setGray(float value)
@@ -736,6 +820,22 @@ void BltShader::setOpacity(float value)
 	gl.Uniform1f(u_opacity, value);
 }
 
+BicubicShader::BicubicShader()
+{
+	INIT_SHADER(simple, bicubic, BicubicShader);
+
+	ShaderBase::init();
+
+	GET_U(texOffsetX);
+	GET_U(sourceSize);
+	GET_U(bc);
+}
+
+void BicubicShader::setSharpness(int sharpness)
+{
+	gl.Uniform2f(u_bc, 1.f - sharpness * 0.01f, sharpness * 0.005f);
+}
+
 Lanczos3Shader::Lanczos3Shader()
 {
 	INIT_SHADER(simple, lanczos3, Lanczos3Shader);
@@ -751,3 +851,21 @@ void Lanczos3Shader::setTexSize(const Vec2i &value)
 	ShaderBase::setTexSize(value);
 	gl.Uniform2f(u_sourceSize, (float)value.x, (float)value.y);
 }
+
+#ifdef MKXPZ_SSL
+XbrzShader::XbrzShader()
+{
+	INIT_SHADER(simple, xbrz, XbrzShader);
+
+	ShaderBase::init();
+
+	GET_U(texOffsetX);
+	GET_U(sourceSize);
+	GET_U(targetScale);
+}
+
+void XbrzShader::setTargetScale(const Vec2 &value)
+{
+	gl.Uniform2f(u_targetScale, value.x, value.y);
+}
+#endif

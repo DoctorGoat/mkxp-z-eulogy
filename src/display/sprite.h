@@ -27,7 +27,6 @@
 #include "disposable.h"
 #include "viewport.h"
 #include "util.h"
-#include "binding-util.h"
 
 class Bitmap;
 struct Color;
@@ -57,7 +56,6 @@ public:
 	DECL_ATTR( ZoomY,       float   )
 	DECL_ATTR( Angle,       float   )
 	DECL_ATTR( Mirror,      bool    )
-	DECL_ATTR( VMirror,     bool    )
 	DECL_ATTR( BushDepth,   int     )
 	DECL_ATTR( BushOpacity, int     )
 	DECL_ATTR( Opacity,     int     )
@@ -77,9 +75,6 @@ public:
 	DECL_ATTR( WaveLength,  int     )
 	DECL_ATTR( WaveSpeed,   int     )
 	DECL_ATTR( WavePhase,   float   )
-	DECL_ATTR( ShaderArr,   VALUE  )
-	DECL_ATTR( BubbleElement,   int  )
-	DECL_ATTR( MirrorShader,    bool )
 
 	void initDynAttribs();
 

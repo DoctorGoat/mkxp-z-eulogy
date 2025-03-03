@@ -23,6 +23,8 @@
 
 #include "sharedstate.h"
 #include "bitmap.h"
+#include "debugwriter.h"
+#include "config.h"
 #include "etc.h"
 #include "etc-internal.h"
 #include "util.h"
@@ -33,11 +35,6 @@
 #include "shader.h"
 #include "glstate.h"
 #include "quadarray.h"
-
-#include "binding-util.h"
-
-#include "rb_shader.h"
-#include "binding-types.h"
 
 #include <math.h>
 #ifndef M_PI
@@ -52,6 +49,8 @@ struct SpritePrivate
 {
     Bitmap *bitmap;
     
+    sigslot::connection bitmapDispCon;
+    
     Quad quad;
     Transform trans;
     
@@ -59,7 +58,6 @@ struct SpritePrivate
     sigslot::connection srcRectCon;
     
     bool mirrored;
-    bool vMirrored;
     int bushDepth;
     float efBushDepth;
     NormValue bushOpacity;
@@ -71,8 +69,8 @@ struct SpritePrivate
     bool patternTile;
     NormValue patternOpacity;
     Vec2 patternScroll;
-    Vec2 patternZoom; 
-
+    Vec2 patternZoom;
+    
     bool invert;
     
     IntRect sceneRect;
@@ -84,10 +82,6 @@ struct SpritePrivate
     
     Color *color;
     Tone *tone;
-
-    VALUE shaderArr;
-    int bubbleElement;
-    bool mirrorShader;
     
     struct
     {
@@ -111,7 +105,6 @@ struct SpritePrivate
     : bitmap(0),
     srcRect(&tmp.rect),
     mirrored(false),
-    vMirrored(false),
     bushDepth(0),
     efBushDepth(0),
     bushOpacity(128),
@@ -123,10 +116,7 @@ struct SpritePrivate
     invert(false),
     isVisible(false),
     color(&tmp.color),
-    tone(&tmp.tone),
-	shaderArr(0),
-    bubbleElement(0),
-    mirrorShader(false)
+    tone(&tmp.tone)
     
     {
         sceneRect.x = sceneRect.y = 0;
@@ -150,8 +140,16 @@ struct SpritePrivate
     {
         srcRectCon.disconnect();
         prepareCon.disconnect();
+        
+        bitmapDisposal();
     }
     
+    void bitmapDisposal()
+    {
+        bitmap = 0;
+        bitmapDispCon.disconnect();
+    }
+
     void recomputeBushDepth()
     {
         if (nullOrDisposed(bitmap))
@@ -169,43 +167,39 @@ struct SpritePrivate
     {
         FloatRect rect = srcRect->toFloatRect();
         Vec2i bmSize;
+        Vec2i bmSizeHires;
         
         if (!nullOrDisposed(bitmap))
+        {
             bmSize = Vec2i(bitmap->width(), bitmap->height());
+            if (bitmap->hasHires())
+            {
+                bmSizeHires = Vec2i(bitmap->getHires()->width(), bitmap->getHires()->height());
+            }
+        }
         
         /* Clamp the rectangle so it doesn't reach outside
          * the bitmap bounds */
         rect.w = clamp<int>(rect.w, 0, bmSize.x-rect.x);
         rect.h = clamp<int>(rect.h, 0, bmSize.y-rect.y);
         
-        quad.setTexRect(mirrored ? rect.hFlipped() : (vMirrored ? rect.vFlipped() : rect));
+        if (bmSizeHires.x && bmSizeHires.y && bmSize.x && bmSize.y)
+        {
+            FloatRect rectHires(rect.x * bmSizeHires.x / bmSize.x,
+                                rect.y * bmSizeHires.y / bmSize.y,
+                                rect.w * bmSizeHires.x / bmSize.x,
+                                rect.h * bmSizeHires.y / bmSize.y);
+            quad.setTexRect(mirrored ? rectHires.hFlipped() : rectHires);
+        }
+        else
+        {
+            quad.setTexRect(mirrored ? rect.hFlipped() : rect);
+        }
         
         quad.setPosRect(FloatRect(0, 0, rect.w, rect.h));
         recomputeBushDepth();
         
         wave.dirty = true;
-    }
-
-    CompiledShader* bindCustomShader(long i, int width, int height)
-    {
-        VALUE value = rb_ary_entry(shaderArr, i);
-        CustomShader* shader = getPrivateDataCheck<CustomShader>(value, CustomShaderType);
-        CompiledShader* compiled = shader->getShader();
-
-        compiled->bind();
-        compiled->applyViewportProj();
-        compiled->setSpriteMat(trans.getIdentityMatrix());
-
-        shader->applyArgs();
-        shader->setFloat("bushOpacity", bushOpacity.norm);
-        shader->setFloat("opacity", opacity.norm);
-		shader->setVec4("color", color->norm);
-		shader->setVec4("tone", tone->norm);
-        shader->setInteger("bubbleElement", bubbleElement);
-        shader->setInteger("mirror", mirrorShader ? 1 : 0);
-
-        compiled->setTexSize(Vec2i(width, height));
-        return compiled;
     }
     
     void updateSrcRectCon()
@@ -222,9 +216,6 @@ struct SpritePrivate
         isVisible = false;
         
         if (nullOrDisposed(bitmap))
-            return;
-        
-        if (bitmap->invalid())
             return;
         
         if (!opacity)
@@ -267,7 +258,7 @@ struct SpritePrivate
         FloatRect pos = tex;
         pos.x = chunkX;
         
-        Quad::setTexPosRect(vert, mirrored ? tex.hFlipped() : (vMirrored ? tex.vFlipped() : tex), pos);
+        Quad::setTexPosRect(vert, mirrored ? tex.hFlipped() : tex, pos);
         vert += 4;
     }
     
@@ -374,7 +365,6 @@ DEF_ATTR_RD_SIMPLE(Sprite, ZoomX,      float,   p->trans.getScale().x)
 DEF_ATTR_RD_SIMPLE(Sprite, ZoomY,      float,   p->trans.getScale().y)
 DEF_ATTR_RD_SIMPLE(Sprite, Angle,      float,   p->trans.getRotation())
 DEF_ATTR_RD_SIMPLE(Sprite, Mirror,     bool,    p->mirrored)
-DEF_ATTR_RD_SIMPLE(Sprite, VMirror,    bool,    p->vMirrored)
 DEF_ATTR_RD_SIMPLE(Sprite, BushDepth,  int,     p->bushDepth)
 DEF_ATTR_RD_SIMPLE(Sprite, BlendType,  int,     p->blendType)
 DEF_ATTR_RD_SIMPLE(Sprite, Pattern,    Bitmap*, p->pattern)
@@ -399,10 +389,6 @@ DEF_ATTR_SIMPLE(Sprite, PatternZoomX, float, p->patternZoom.x)
 DEF_ATTR_SIMPLE(Sprite, PatternZoomY, float, p->patternZoom.y)
 DEF_ATTR_SIMPLE(Sprite, Invert,      bool,    p->invert)
 
-DEF_ATTR_SIMPLE(Sprite, ShaderArr,  VALUE, p->shaderArr)
-DEF_ATTR_SIMPLE(Sprite, BubbleElement,int, p->bubbleElement)
-DEF_ATTR_SIMPLE(Sprite, MirrorShader, bool,p->mirrorShader)
-
 void Sprite::setBitmap(Bitmap *bitmap)
 {
     guardDisposed();
@@ -412,8 +398,15 @@ void Sprite::setBitmap(Bitmap *bitmap)
     
     p->bitmap = bitmap;
     
+    p->bitmapDispCon.disconnect();
+    
     if (nullOrDisposed(bitmap))
+    {
+        p->bitmap = 0;
         return;
+    }
+    
+    p->bitmapDispCon = bitmap->wasDisposed.connect(&SpritePrivate::bitmapDisposal, p);
     
     bitmap->ensureNonMega();
     
@@ -515,17 +508,6 @@ void Sprite::setMirror(bool mirrored)
     p->onSrcRectChange();
 }
 
-void Sprite::setVMirror(bool vMirrored)
-{
-    guardDisposed();
-    
-    if (p->vMirrored == vMirrored)
-        return;
-    
-    p->vMirrored = vMirrored;
-    p->onSrcRectChange();
-}
-
 void Sprite::setBushDepth(int value)
 {
     guardDisposed();
@@ -620,7 +602,7 @@ void Sprite::update()
     guardDisposed();
     
     Flashable::update();
-
+    
     p->wave.phase += p->wave.speed / 180;
     p->wave.dirty = true;
 }
@@ -643,6 +625,8 @@ void Sprite::draw()
     p->invert             ||
     (p->pattern && !p->pattern->isDisposed());
     
+    int scalingMethod = NearestNeighbor;
+
     if (renderEffect)
     {
         SpriteShader &shader = shState->shaders().sprite;
@@ -657,6 +641,10 @@ void Sprite::draw()
         shader.setBushOpacity(p->bushOpacity.norm);
         
         if (p->pattern && p->patternOpacity > 0) {
+            if (p->pattern->hasHires()) {
+                Debug() << "BUG: High-res Sprite pattern not implemented";
+            }
+
             shader.setPattern(p->pattern->getGLTypes().tex, Vec2(p->pattern->width(), p->pattern->height()));
             shader.setPatternBlendType(p->patternBlendType);
             shader.setPatternTile(p->patternTile);
@@ -692,77 +680,115 @@ void Sprite::draw()
     }
     else
     {
-        SimpleSpriteShader &shader = shState->shaders().simpleSprite;
-        shader.bind();
-        
-        shader.setSpriteMat(p->trans.getMatrix());
-        shader.applyViewportProj();
-        base = &shader;
+        int sourceWidthHires = p->bitmap->hasHires() ? p->bitmap->getHires()->width() : p->bitmap->width();
+        int sourceHeightHires = p->bitmap->hasHires() ? p->bitmap->getHires()->height() : p->bitmap->height();
+
+        double framebufferScalingFactor = shState->config().enableHires ? shState->config().framebufferScalingFactor : 1.0;
+
+        int targetWidthHires = (int)lround(framebufferScalingFactor * p->bitmap->width() * p->trans.getScale().x);
+        int targetHeightHires = (int)lround(framebufferScalingFactor * p->bitmap->height() * p->trans.getScale().y);
+
+        int scaleIsSpecial = UpScale;
+
+        if (targetWidthHires == sourceWidthHires && targetHeightHires == sourceHeightHires)
+        {
+            scaleIsSpecial = SameScale;
+        }
+
+        if (targetWidthHires < sourceWidthHires && targetHeightHires < sourceHeightHires)
+        {
+            scaleIsSpecial = DownScale;
+        }
+
+        switch (scaleIsSpecial)
+        {
+        case SameScale:
+            scalingMethod = NearestNeighbor;
+            break;
+        case DownScale:
+            scalingMethod = shState->config().bitmapSmoothScalingDown;
+            break;
+        default:
+            scalingMethod = shState->config().bitmapSmoothScaling;
+	}
+
+        if (p->trans.getRotation() != 0.0)
+        {
+            scalingMethod = shState->config().bitmapSmoothScaling;
+        }
+
+        switch (scalingMethod)
+        {
+        case Bicubic:
+        {
+            BicubicSpriteShader &shader = shState->shaders().bicubicSprite;
+            shader.bind();
+
+            shader.setTexSize(Vec2i(sourceWidthHires, sourceHeightHires));
+            shader.setSharpness(shState->config().bicubicSharpness);
+            shader.setSpriteMat(p->trans.getMatrix());
+            shader.applyViewportProj();
+            base = &shader;
+        }
+            break;
+        case Lanczos3:
+        {
+            Lanczos3SpriteShader &shader = shState->shaders().lanczos3Sprite;
+            shader.bind();
+            
+            shader.setTexSize(Vec2i(sourceWidthHires, sourceHeightHires));
+            shader.setSpriteMat(p->trans.getMatrix());
+            shader.applyViewportProj();
+            base = &shader;
+        }
+            break;
+#ifdef MKXPZ_SSL
+        case xBRZ:
+        {
+            XbrzSpriteShader &shader = shState->shaders().xbrzSprite;
+            shader.bind();
+
+            shader.setTexSize(Vec2i(sourceWidthHires, sourceHeightHires));
+            shader.setTargetScale(Vec2((float)(shState->config().xbrzScalingFactor), (float)(shState->config().xbrzScalingFactor)));
+            shader.setSpriteMat(p->trans.getMatrix());
+            shader.applyViewportProj();
+            base = &shader;
+        }
+            break;
+#endif
+        default:
+        {
+            SimpleSpriteShader &shader = shState->shaders().simpleSprite;
+            shader.bind();
+
+            shader.setSpriteMat(p->trans.getMatrix());
+            shader.applyViewportProj();
+            base = &shader;
+        }
+        }        
     }
     
-    p->bitmap->bindTex(*base);
     glState.blendMode.pushSet(p->blendType);
+    
+    p->bitmap->bindTex(*base, false);
 
-    if(p->shaderArr)
+#ifdef MKXPZ_SSL
+    if (scalingMethod == xBRZ)
     {
-        long size = rb_array_len(p->shaderArr);
-        if(size > 0)
-        {
-            // Store the current FBO used, as FBO::unbind() will set it to 0 which is not correct
-            GLint originalFbo = 0;
-            gl.GetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
-
-            // Get the general purpose quad and set it to the bitmap's dimensions for shader stacking
-            // Ensure the viewport and scissorBox are isolated to the sprite as well. Otherwise, bitmaps larger
-            // than the game's resolution will appear cut off past those dimensions
-            // This is needed to ensure that the shaders apply to the bitmap's size and position in isolation
-            Quad &quad = shState->gpQuad();
-            int width = p->bitmap->width(), height = p->bitmap->height();
-            FloatRect texPosRect(0, 0, width, height);
-            quad.setTexPosRect(texPosRect, texPosRect);
-            glState.blend.pushSet(false);
-            IntRect rect(0, 0, width, height);
-            glState.viewport.pushSet(rect);
-            glState.scissorBox.pushSet(rect);
-        
-            // Bind the bitmap's frontBuffer FBO and use the temporary viewport and identity matrix to render the sprite
-            // in isolation. This will apply the sprite's main shader first as the base shader.
-            FBO::bind(p->bitmap->frontBuffer().fbo);
-            base->setSpriteMat(p->trans.getIdentityMatrix());
-            base->applyViewportProj();
-        
-            CompiledShader *customShader;
-            for (long i = 0; i < size; i++)
-            {
-                // Using the currently bound shader, draw using the general purpose quad. This writes to the frontBuffer
-                quad.draw();
-                // Now, the frontBuffer TBO contains the output of the above draw call. Swap frontBuffer and backBuffer,
-                // binding the resulting output TBO as the next input TBO.
-                p->bitmap->pingpongBind();
-                // Bind the custom shader and assign it, as the final one must be drawn differently
-                customShader = p->bindCustomShader(i, width, height);
-            }
-
-            // Restore the original scissorBox, viewport and blend, then apply the sprite's transformation matrix
-            glState.scissorBox.pop();
-            glState.viewport.pop();
-            glState.blend.pop();
-            customShader->applyViewportProj();
-            customShader->setSpriteMat(p->trans.getMatrix());
-
-            // Restore the original FBO for the final draw
-            gl.BindFramebuffer(GL_FRAMEBUFFER, originalFbo);
-        }
+        XbrzShader &shader = shState->shaders().xbrz;
+        shader.setTargetScale(Vec2((float)(shState->config().xbrzScalingFactor), (float)(shState->config().xbrzScalingFactor)));
     }
-
-    // Always use bilinear filtering for sprites
-    TEX::setSmooth(true);
+#endif
+    
+    TEX::setSmooth(scalingMethod == Bilinear);
 
     if (p->wave.active)
         p->wave.qArray.draw();
     else
         p->quad.draw();
     
+    TEX::setSmooth(false);
+
     glState.blendMode.pop();
 }
 

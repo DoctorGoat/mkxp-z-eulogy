@@ -23,8 +23,6 @@
 #define ETC_TYPES_H
 
 #include "util.h"
-#include "serial-util.h"
-#include "util/exception.h"
 
 #include <SDL_rect.h>
 
@@ -43,39 +41,6 @@ struct Vec2
 	bool operator==(const Vec2 &other) const
 	{
 		return (x == other.x && y == other.y);
-	}
-	
-	float getX() const { return x; }
-	float getY() const { return y; }
-
-	void setX(float x) { this->x = x; }
-	void setY(float y) { this->y = y; }
-
-	void set(float x, float y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-
-	int serialSize() {
-		return 4 * 4;
-	}
-
-	void serialize(char *buffer)
-	{
-		writeDouble(&buffer, x);
-		writeDouble(&buffer, y);
-	}
-
-	static Vec2* deserialize(const char *data, int len)
-	{
-		if (len != 16) throw Exception(Exception::ArgumentError, "Vec2: Serialized data invalid");
-
-		Vec2* vec2 = new Vec2();
-		vec2->x = readDouble(&data);
-		vec2->y = readDouble(&data);
-
-		return vec2;
 	}
 };
 
@@ -99,49 +64,6 @@ struct Vec4
 	bool xyzNotNull() const
 	{
 		return (x != 0.0f || y != 0.0f || z != 0.0f);
-	}
-
-	float getX() const { return x; }
-	float getY() const { return y; }
-	float getZ() const { return z; }	
-	float getW() const { return w; }
-
-	void setX(float x) { this->x = x; }
-	void setY(float y) { this->y = y; }
-	void setZ(float z) { this->z = z; }
-	void setW(float w) { this->w = w; }
-
-	void set(float x, float y, float z, float w)
-	{
-		this->x = x;
-		this->y = y;
-		this->z = z;
-		this->w = w;
-	}
-
-	int serialSize() {
-		return 4 * 8;
-	}
-
-	void serialize(char *buffer)
-	{
-		writeDouble(&buffer, x);
-		writeDouble(&buffer, y);
-		writeDouble(&buffer, z);
-		writeDouble(&buffer, w);
-	}
-
-	static Vec4* deserialize(const char *data, int len)
-	{
-		if (len != 32) throw Exception(Exception::ArgumentError, "Vec4: Serialized data invalid");
-
-		Vec4* vec4 = new Vec4();
-		vec4->x = readDouble(&data);
-		vec4->y = readDouble(&data);
-		vec4->z = readDouble(&data);
-		vec4->w = readDouble(&data);
-
-		return vec4;
 	}
 };
 
@@ -232,18 +154,6 @@ struct Vec2i
 	operator Vec2() const
 	{
 		return Vec2(x, y);
-	}
-
-	int getX() const { return x; }
-	int getY() const { return y; }
-
-	void setX(int x) { this->x = x; }
-	void setY(int y) { this->y = y; }
-
-	void set(int x, int y)
-	{
-		this->x = x;
-		this->y = y;
 	}
 };
 
@@ -347,11 +257,6 @@ struct FloatRect
 	FloatRect hFlipped() const
 	{
 		return FloatRect(x+w, y, -w, h);
-	}
-
-	FloatRect vFlipped() const
-	{
-		return FloatRect(x, y+h, w, -h);
 	}
 };
 

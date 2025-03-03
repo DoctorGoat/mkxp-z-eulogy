@@ -88,12 +88,12 @@ public:
 
 	void setTexSize(const Vec2i &value);
 	void setTranslation(const Vec2i &value);
-	void setSpriteMat(const float value[16]);
 
 protected:
 	void init();
+	virtual bool framebufferScalingAllowed();
 
-	GLint u_texSizeInv, u_translation, u_spriteMat;
+	GLint u_texSizeInv, u_translation;
 };
 
 class FlatColorShader : public ShaderBase
@@ -134,6 +134,11 @@ class SimpleSpriteShader : public ShaderBase
 {
 public:
 	SimpleSpriteShader();
+
+	void setSpriteMat(const float value[16]);
+
+protected:
+	GLint u_spriteMat;
 };
 
 class AlphaSpriteShader : public ShaderBase
@@ -141,10 +146,11 @@ class AlphaSpriteShader : public ShaderBase
 public:
 	AlphaSpriteShader();
 
+	void setSpriteMat(const float value[16]);
 	void setAlpha(float value);
 
 private:
-	GLint u_alpha;
+	GLint u_spriteMat, u_alpha;
 };
 
 class TransShader : public ShaderBase
@@ -180,6 +186,7 @@ class SpriteShader : public ShaderBase
 public:
 	SpriteShader();
 
+	void setSpriteMat(const float value[16]);
 	void setTone(const Vec4 &value);
 	void setColor(const Vec4 &value);
 	void setOpacity(float value);
@@ -219,6 +226,9 @@ public:
 	GrayShader();
 
 	void setGray(float value);
+
+protected:
+	virtual bool framebufferScalingAllowed();
 
 private:
 	GLint u_gray;
@@ -331,6 +341,63 @@ protected:
 	GLint u_sourceSize;
 };
 
+class BicubicShader : public Lanczos3Shader
+{
+public:
+	BicubicShader();
+
+	void setSharpness(int sharpness);
+
+protected:
+	GLint u_bc;
+};
+
+#ifdef MKXPZ_SSL
+class XbrzShader : public Lanczos3Shader
+{
+public:
+	XbrzShader();
+
+	void setTargetScale(const Vec2 &value);
+
+protected:
+	GLint u_targetScale;
+};
+#endif
+
+class Lanczos3SpriteShader : public SimpleSpriteShader
+{
+public:
+	Lanczos3SpriteShader();
+
+	void setTexSize(const Vec2i &value);
+
+protected:
+	GLint u_sourceSize;
+};
+
+class BicubicSpriteShader : public Lanczos3SpriteShader
+{
+public:
+	BicubicSpriteShader();
+
+	void setSharpness(int sharpness);
+
+protected:
+	GLint u_bc;
+};
+
+class XbrzSpriteShader : public Lanczos3SpriteShader
+{
+public:
+	XbrzSpriteShader();
+
+	void setTargetScale(const Vec2 &value);
+
+protected:
+	GLint u_targetScale;
+};
+
 /* Global object containing all available shaders */
 struct ShaderSet
 {
@@ -352,7 +419,16 @@ struct ShaderSet
 	SimpleMatrixShader simpleMatrix;
 	BlurShader blur;
 	TilemapVXShader tilemapVX;
+	BicubicShader bicubic;
 	Lanczos3Shader lanczos3;
+#ifdef MKXPZ_SSL
+	XbrzShader xbrz;
+#endif
+	Lanczos3SpriteShader lanczos3Sprite;
+	BicubicSpriteShader bicubicSprite;
+#ifdef MKXPZ_SSL
+	XbrzSpriteShader xbrzSprite;
+#endif
 };
 
 #endif // SHADER_H

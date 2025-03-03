@@ -58,13 +58,18 @@ public:
 
 	int width() const;
 	int height() const;
+	int widthHires() const;
+	int heightHires() const;
+	bool isPingPongFramebufferActive() const;
+    int displayContentWidth() const;
+    int displayContentHeight() const;
     int displayWidth() const;
     int displayHeight() const;
 	void resizeScreen(int width, int height);
     void resizeWindow(int width, int height, bool center=false);
 	void drawMovieFrame(const THEORAPLAY_VideoFrame* video, Bitmap *videoBitmap);
 	bool updateMovieInput(Movie *movie);
-	void playMovie(const char *filename, int volume, bool skippable, void *shaderArr);
+	void playMovie(const char *filename, int volume, bool skippable);
 	void screenshot(const char *filename);
 
 	void reset();
@@ -76,7 +81,7 @@ public:
     DECL_ATTR( Scale,    double )
     DECL_ATTR( Frameskip, bool )
     DECL_ATTR( FixedAspectRatio, bool )
-    DECL_ATTR( SmoothScaling, bool )
+    DECL_ATTR( SmoothScaling, int )
     DECL_ATTR( IntegerScaling, bool )
     DECL_ATTR( LastMileScaling, bool )
     DECL_ATTR( Threadsafe, bool )
