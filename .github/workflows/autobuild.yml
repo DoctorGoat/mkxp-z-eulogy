@@ -1,9 +1,9 @@
 # I have no idea what I'm doing
-name: Automatic Build
+name: Automatic Buildddd
 
 on:
   push:
-    branches: ['dev', 'autobuild']
+    branches: ['test', 'autobuild']
     paths-ignore: ['*.md', '*.json', '*.png']
 
 jobs:
